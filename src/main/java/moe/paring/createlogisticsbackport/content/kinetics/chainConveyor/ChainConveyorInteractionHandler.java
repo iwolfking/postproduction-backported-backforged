@@ -23,7 +23,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -53,7 +52,7 @@ public class ChainConveyorInteractionHandler {
         ItemStack mainHandItem = mc.player.getMainHandItem();
         boolean isWrench = AllItemTags.WRENCH.matches(mainHandItem);
         boolean dismantling = isWrench && mc.player.isShiftKeyDown();
-        double range = mc.player.getAttribute(ForgeMod.BLOCK_REACH.get())
+        double range = mc.player.getAttribute(ForgeMod.REACH_DISTANCE.get())
                 .getValue() + 1;
 
         Vec3 from = RaycastHelper.getTraceOrigin(mc.player);
@@ -162,14 +161,6 @@ public class ChainConveyorInteractionHandler {
         ms.translate(selectedLift.getX() - camera.x, selectedLift.getY() - camera.y, selectedLift.getZ() - camera.z);
         selectedShape.drawOutline(selectedLift, ms, vb);
         ms.popPose();
-    }
-
-    @SubscribeEvent
-    public static void hideVanillaBlockSelection(RenderHighlightEvent.Block event) {
-        if (selectedLift == null || selectedShape == null)
-            return;
-
-        event.setCanceled(true);
     }
 
 }

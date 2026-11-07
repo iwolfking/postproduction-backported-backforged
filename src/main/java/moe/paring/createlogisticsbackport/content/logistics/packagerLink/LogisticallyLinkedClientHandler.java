@@ -32,7 +32,7 @@ public class LogisticallyLinkedClientHandler {
 			return;
 
 		CompoundTag tag = mainHandItem.getTag()
-			.getCompound(BlockItem.BLOCK_ENTITY_TAG);
+			.getCompound("BlockEntityTag");
 		if (!tag.hasUUID("Freq"))
 			return;
 
@@ -42,7 +42,7 @@ public class LogisticallyLinkedClientHandler {
 		for (LogisticallyLinkedBehaviour behaviour : LogisticallyLinkedBehaviour.getAllPresent(uuid, false, true)) {
 			SmartBlockEntity be = behaviour.blockEntity;
 			VoxelShape shape = be.getBlockState()
-				.getShape(player.level(), be.getBlockPos());
+				.getShape(player.level, be.getBlockPos());
 			if (shape.isEmpty())
 				continue;
 			if (!player.blockPosition()

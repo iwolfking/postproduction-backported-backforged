@@ -7,15 +7,16 @@ import com.simibubi.create.foundation.gui.element.DelegatedStencilElement;
 import com.simibubi.create.foundation.gui.element.ScreenElement;
 import com.simibubi.create.foundation.utility.Color;
 import moe.paring.createlogisticsbackport.CreateLogisticsBackport;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.LightTexture;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.joml.Matrix4f;
+import com.mojang.math.Matrix4f;
 
 public class ExtraIcons implements ScreenElement {
     public static final ResourceLocation ICON_ATLAS = Create.asResource("textures/gui/icons_backport.png");
@@ -186,8 +187,9 @@ public class ExtraIcons implements ScreenElement {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void render(GuiGraphics graphics, int x, int y) {
-        graphics.blit(ICON_ATLAS, x, y, 0, iconX, iconY, 16, 16, 256, 256);
+    public void render(PoseStack ms, int x, int y) {
+        RenderSystem.setShaderTexture(0, ICON_ATLAS);
+        GuiComponent.blit(ms, x, y, 0, iconX, iconY, 16, 16, 256, 256);
     }
 
     @OnlyIn(Dist.CLIENT)

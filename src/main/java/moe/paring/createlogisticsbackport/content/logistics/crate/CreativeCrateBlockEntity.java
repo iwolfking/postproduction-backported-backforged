@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.content.logistics.crate;
 
+import net.minecraftforge.items.CapabilityItemHandler;
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.logistics.crate.BottomlessItemHandler;
@@ -16,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
@@ -49,7 +50,7 @@ public class CreativeCrateBlockEntity extends CrateBlockEntity {
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == ForgeCapabilities.ITEM_HANDLER)
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return itemHandler.cast();
 		return super.getCapability(cap, side);
 	}

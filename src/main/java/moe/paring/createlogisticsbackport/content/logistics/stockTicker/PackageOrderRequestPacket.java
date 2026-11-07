@@ -59,7 +59,7 @@ public class PackageOrderRequestPacket extends BlockEntityConfigurationPacket<St
 
 		if (!order.isEmpty()) {
 			ExtraSoundEvents.STOCK_TICKER_REQUEST.playOnServer(be.getLevel(), pos);
-			WiFiEffectPacket.send(player.level(), pos);
+			WiFiEffectPacket.send(player.level, pos);
 		}
 
 		be.broadcastPackageRequest(RequestType.PLAYER, order, null, address);

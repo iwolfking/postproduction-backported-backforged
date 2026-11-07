@@ -30,7 +30,7 @@ public class PackageRenderer extends EntityRenderer<PackageEntity> {
 
 	@Override
 	public void render(PackageEntity entity, float yaw, float pt, PoseStack ms, MultiBufferSource buffer, int light) {
-		if (!Backend.canUseInstancing(entity.level())) {
+		if (!Backend.canUseInstancing(entity.level)) {
 			ItemStack box = entity.box;
 			if (box.isEmpty() || !PackageItem.isPackage(box)) box = ExtraBlocks.CARDBOARD_BLOCK.asStack();
 			PartialModel model = ExtraPartialModels.PACKAGES.get(ForgeRegistries.ITEMS.getKey(box.getItem()));

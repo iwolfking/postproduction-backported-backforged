@@ -20,7 +20,6 @@ import moe.paring.createlogisticsbackport.content.decoration.palettes.WeatheredI
 import moe.paring.createlogisticsbackport.foundation.data.CreateRegistrate2;
 import moe.paring.createlogisticsbackport.foundation.data.WindowGen2;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -28,7 +27,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.common.Tags;
 
@@ -40,16 +39,16 @@ import static moe.paring.createlogisticsbackport.foundation.data.WindowGen2.*;
 
 public class ExtraPaletteBlocks {
     public static final BlockEntry<WindowBlock>
-            CHERRY_WINDOW = woodenWindowBlock(WoodType.CHERRY, Blocks.CHERRY_PLANKS),
-            BAMBOO_WINDOW = woodenWindowBlock(WoodType.BAMBOO, Blocks.BAMBOO_PLANKS),
+            CHERRY_WINDOW = woodenWindowBlock(WoodType.OAK, Blocks.OAK_PLANKS),
+            BAMBOO_WINDOW = woodenWindowBlock(WoodType.OAK, Blocks.OAK_PLANKS),
             WEATHERED_IRON_WINDOW = WindowGen2
                     .randomisedWindowBlock("weathered_iron_window", ExtraBlocks.WEATHERED_IRON_BLOCK,
-                            () -> RenderType::translucent, true, () -> MapColor.TERRACOTTA_LIGHT_GRAY)
+                            () -> RenderType::translucent, true, () -> MaterialColor.TERRACOTTA_LIGHT_GRAY)
                     .onRegister(CreateRegistrate2.connectedTextures(WeatheredIronWindowCTBehaviour::new))
                     .register();
     public static final BlockEntry<ConnectedGlassPaneBlock>
-            CHERRY_WINDOW_PANE = woodenWindowPane(WoodType.CHERRY, CHERRY_WINDOW),
-            BAMBOO_WINDOW_PANE = woodenWindowPane(WoodType.BAMBOO, BAMBOO_WINDOW),
+            CHERRY_WINDOW_PANE = woodenWindowPane(WoodType.OAK, CHERRY_WINDOW),
+            BAMBOO_WINDOW_PANE = woodenWindowPane(WoodType.OAK, BAMBOO_WINDOW),
             WEATHERED_IRON_WINDOW_PANE = customWindowPane("weathered_iron_window", WEATHERED_IRON_WINDOW, null, () -> RenderType::translucent)
                     .onRegister(CreateRegistrate2.connectedTextures(WeatheredIronWindowPaneCTBehaviour::new))
                     .register();

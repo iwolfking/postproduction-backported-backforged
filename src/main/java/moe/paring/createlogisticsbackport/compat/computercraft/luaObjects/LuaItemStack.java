@@ -1,6 +1,6 @@
 package moe.paring.createlogisticsbackport.compat.computercraft.luaObjects;
 
-import dan200.computercraft.api.detail.VanillaDetailRegistries;
+import dan200.computercraft.api.detail.DetailRegistries;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
@@ -15,7 +15,7 @@ public class LuaItemStack implements LuaComparable {
 
   @Override
   public Map<?, ?> getTableRepresentation() {
-    return VanillaDetailRegistries.ITEM_STACK.getDetails(stack);
+    return DetailRegistries.ITEM_STACK.getDetails(stack);
   }
 
 }

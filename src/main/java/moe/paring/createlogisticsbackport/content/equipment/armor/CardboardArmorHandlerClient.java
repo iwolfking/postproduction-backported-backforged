@@ -44,7 +44,7 @@ public class CardboardArmorHandlerClient {
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void playerRendersAsBoxWhenSneaking(RenderPlayerEvent.Pre event) {
-		Player player = event.getEntity();
+		Player player = (Player) event.getEntity();
 		if (!CardboardArmorHandler.testForStealth(player))
 			return;
 
@@ -62,7 +62,7 @@ public class CardboardArmorHandlerClient {
 			.subtract(player.xo, player.yo, player.zo)
 			.length();
 
-		if (player.onGround())
+		if (player.isOnGround())
 			ms.translate(0,
 				Math.min(Math.abs(Mth.cos((AnimationTickHolder.getRenderTime() % 256) / 2.0f)) * 2 / 16f, movement * 5),
 				0);
@@ -82,7 +82,7 @@ public class CardboardArmorHandlerClient {
 
 	private static Integer getCurrentBoxIndex(Player player) throws ExecutionException {
 		return BOXES_PLAYERS_ARE_HIDING_AS.get(player.getUUID(),
-			() -> player.level().random.nextInt(ExtraPartialModels.PACKAGES_TO_HIDE_AS.size()));
+			() -> player.level.random.nextInt(ExtraPartialModels.PACKAGES_TO_HIDE_AS.size()));
 	}
 
 }

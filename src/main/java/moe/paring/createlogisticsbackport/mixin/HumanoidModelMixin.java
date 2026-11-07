@@ -1,6 +1,5 @@
 package moe.paring.createlogisticsbackport.mixin;
 
-import moe.paring.createlogisticsbackport.foundation.render.PlayerSkyhookRenderer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,7 +15,6 @@ public class HumanoidModelMixin<T extends LivingEntity> {
 		if (!(pEntity instanceof AbstractClientPlayer player))
 			return;
 
-		PlayerSkyhookRenderer.afterSetupAnim(player, (HumanoidModel<?>) (Object) this);
 	}
 
 	@Inject(method = "setupAnim*", at = @At("HEAD"))
@@ -24,6 +22,5 @@ public class HumanoidModelMixin<T extends LivingEntity> {
 		if (!(pEntity instanceof AbstractClientPlayer player))
 			return;
 
-		PlayerSkyhookRenderer.beforeSetupAnim(player, (HumanoidModel<?>) (Object) this);
 	}
 }

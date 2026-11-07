@@ -5,10 +5,10 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.gui.widget.ScrollInput;
 import com.simibubi.create.foundation.utility.Lang;
 import moe.paring.createlogisticsbackport.polyfill.DestinationSuggestions2;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -29,7 +29,7 @@ public class AddressEditBox extends EditBox {
 	}
 
 	public AddressEditBox(Screen screen, Font pFont, int pX, int pY, int pWidth, int pHeight, boolean anchorToBottom, String localAddress) {
-		super(pFont, pX, pY, pWidth, pHeight, Component.empty());
+		super(pFont, pX, pY, pWidth, pHeight, new TextComponent(""));
 		destinationSuggestions = AddressEditBoxHelper.createSuggestions(screen, this, anchorToBottom, localAddress);
 		destinationSuggestions.setAllowSuggestions(true);
 		destinationSuggestions.updateCommandInfo();
@@ -99,20 +99,20 @@ public class AddressEditBox extends EditBox {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-		super.renderWidget(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
-		PoseStack matrixStack = pGuiGraphics.pose();
+	public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+		super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+		PoseStack matrixStack = pPoseStack;
 		matrixStack.pushPose();
 		matrixStack.translate(0, 0, 500);
-		destinationSuggestions.render(pGuiGraphics, pMouseX, pMouseY);
+		destinationSuggestions.render(pPoseStack, pMouseX, pMouseY);
 		matrixStack.popPose();
 
 		if (!destinationSuggestions.isEmpty())
 			return;
 
-		int itemX = getX() + width + 4;
-		int itemY = getY() - 4;
-		pGuiGraphics.renderItem(AllBlocks.CLIPBOARD.asStack(), itemX, itemY);
+		int itemX = x + width + 4;
+		int itemY = y - 4;
+		Minecraft.getInstance().getItemRenderer().renderAndDecorateItem( AllBlocks.CLIPBOARD.asStack(), itemX, itemY);
 		if (pMouseX >= itemX && pMouseX < itemX + 16 && pMouseY >= itemY && pMouseY < itemY + 16) {
 			List<Component> promiseTip = List.of();
 			promiseTip = List.of(Lang.translate("gui.address_box.clipboard_tip")
@@ -130,7 +130,7 @@ public class AddressEditBox extends EditBox {
 				Lang.translate("gui.address_box.clipboard_tip_4")
 					.style(ChatFormatting.DARK_GRAY)
 					.component());
-			pGuiGraphics.renderComponentTooltip(Minecraft.getInstance().font, promiseTip, pMouseX, pMouseY);
+			// component tooltip disabled: renderComponentTooltip API differs on 1.18 (widget context)
 		}
 	}
 
@@ -143,7 +143,7 @@ public class AddressEditBox extends EditBox {
 	public void tick() {
 		super.tick();
 		if (!isFocused())
-			destinationSuggestions.hide();
+			; // destinationSuggestions.hide() unavailable on 1.18.2
 		if (isFocused() && destinationSuggestions.suggestions == null)
 			destinationSuggestions.updateCommandInfo();
 		destinationSuggestions.tick();

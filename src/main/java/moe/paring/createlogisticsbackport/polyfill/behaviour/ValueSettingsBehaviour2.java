@@ -80,7 +80,7 @@ public interface ValueSettingsBehaviour2 extends ClipboardCloneable {
         origin.getWorld()
                 .playSound(null, origin.getPos(), SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.25f, 2f);
         origin.getWorld()
-                .playSound(null, origin.getPos(), SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE.get(), SoundSource.BLOCKS, 0.03f,
+                .playSound(null, origin.getPos(), SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE, SoundSource.BLOCKS, 0.03f,
                         1.125f);
     }
 

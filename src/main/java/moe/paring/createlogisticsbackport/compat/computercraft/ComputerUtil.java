@@ -1,6 +1,6 @@
 package moe.paring.createlogisticsbackport.compat.computercraft;
 
-import dan200.computercraft.api.detail.VanillaDetailRegistries;
+import dan200.computercraft.api.detail.DetailRegistries;
 import dan200.computercraft.api.lua.LuaException;
 import moe.paring.createlogisticsbackport.compat.computercraft.luaObjects.LuaComparable;
 import moe.paring.createlogisticsbackport.content.logistics.BigItemStack;
@@ -14,7 +14,7 @@ public class ComputerUtil {
 
   public static int bigItemStackToLuaTableFilter(BigItemStack entry, Map<?,?> filter) throws LuaException {
 
-    Map<String,Object> details = VanillaDetailRegistries.ITEM_STACK.getDetails(entry.stack);
+    Map<String,Object> details = DetailRegistries.ITEM_STACK.getDetails(entry.stack);
 
     // Count needs to be replaced because BigItemStack can have a different count than the stack
     details.put("count", entry.count);
@@ -275,7 +275,7 @@ public class ComputerUtil {
 		var size = inventory.getSlots();
 		for (var i = 0; i < size; i++) {
 			var stack = inventory.getStackInSlot(i);
-			if (!stack.isEmpty()) result.put(i + 1, VanillaDetailRegistries.ITEM_STACK.getBasicDetails(stack));
+			if (!stack.isEmpty()) result.put(i + 1, DetailRegistries.ITEM_STACK.getBasicDetails(stack));
 		}
 
 		return result;
@@ -287,7 +287,7 @@ public class ComputerUtil {
         if (slot < 1 || slot > maxSlots || Double.isNaN(slot))
             throw new LuaException(String.format("Slot " + slot + " out of range,available slots between " + 1 + " and " + maxSlots));
         var stack = inventory.getStackInSlot(slot - 1);
-        return stack.isEmpty() ? null : VanillaDetailRegistries.ITEM_STACK.getDetails(stack);
+        return stack.isEmpty() ? null : DetailRegistries.ITEM_STACK.getDetails(stack);
     }
 
     public static Map<String, ?> getItemDetail(InventorySummary inventorySummary, int slot) throws LuaException {
@@ -296,7 +296,7 @@ public class ComputerUtil {
         if (slot < 1 || slot > maxSlots || Double.isNaN(slot))
             throw new LuaException(String.format("Slot " + slot + " out of range,available slots between " + 1 + " and " + maxSlots));
 		BigItemStack entry = stacks.get(slot-1);
-		Map<String, Object> details = new HashMap<>(VanillaDetailRegistries.ITEM_STACK.getDetails(entry.stack));
+		Map<String, Object> details = new HashMap<>(DetailRegistries.ITEM_STACK.getDetails(entry.stack));
 		details.put("count", entry.count);
 
         return

@@ -56,8 +56,7 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-		super.addBehaviours(behaviours);
-		behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
+		super.addBehaviours(behaviours);        computerBehaviour = null;
 	}
 
 	// Player-interface Feature
@@ -235,8 +234,7 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 			summary.add(receivedPayments.getStackInSlot(i));
 		for (BigItemStack entry : summary.getStacksByCount())
 			Lang.builder()
-				.text(Component.translatable(entry.stack.getDescriptionId())
-					.getString() + " x" + entry.count)
+				.text(new net.minecraft.network.chat.TranslatableComponent(entry.stack.getDescriptionId()).getString() + " x" + entry.count)
 				.style(ChatFormatting.GREEN)
 				.forGoggles(tooltip);
 
@@ -250,7 +248,7 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
 		if (isItemHandlerCap(cap))
 			return capability.cast();
-		if (computerBehaviour.isPeripheralCap(cap))
+		if (computerBehaviour != null && computerBehaviour.isPeripheralCap(cap))
 			return computerBehaviour.getPeripheralCapability();
 
 		return super.getCapability(cap, side);
@@ -287,7 +285,7 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 
 		@Override
 		public Component getDisplayName() {
-			return Component.empty();
+			return net.minecraft.network.chat.TextComponent.EMPTY;
 		}
 
 	}
@@ -301,7 +299,7 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 
 		@Override
 		public Component getDisplayName() {
-			return Component.empty();
+			return net.minecraft.network.chat.TextComponent.EMPTY;
 		}
 
 	}

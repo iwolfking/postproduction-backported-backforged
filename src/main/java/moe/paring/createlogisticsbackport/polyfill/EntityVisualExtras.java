@@ -9,7 +9,7 @@ import net.minecraft.world.level.LightLayer;
 
 public class EntityVisualExtras {
     public static Pair<Integer, Integer> computePackedLight(float partialTick, Entity entity, Level level) {
-        BlockPos pos = BlockPos.containing(entity.getLightProbePosition(partialTick));
+        BlockPos pos = new BlockPos(entity.getLightProbePosition(partialTick));
         int blockLight = entity.isOnFire() ? 15 : level.getBrightness(LightLayer.BLOCK, pos);
         int skyLight = level.getBrightness(LightLayer.SKY, pos);
         return Pair.of(blockLight, skyLight);

@@ -15,16 +15,13 @@ import moe.paring.createlogisticsbackport.content.logistics.packagerLink.Logisti
 import moe.paring.createlogisticsbackport.content.logistics.tableCloth.TableClothOverlayRenderer;
 import moe.paring.createlogisticsbackport.foundation.utility.TickBasedCache;
 import moe.paring.createlogisticsbackport.polyfill.behaviour.filtering.FilteringRenderer2;
-import moe.paring.createlogisticsbackport.polyfill.misc.LogisticsHatArmorLayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -80,12 +77,8 @@ public class ClientEvents {
         @SubscribeEvent
         public static void addEntityRenderLayers(EntityRenderersEvent.AddLayers event) {
             EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-            LogisticsHatArmorLayer.registerOnAll(dispatcher);
         }
 
-        @SubscribeEvent
-        public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
-            event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "blueprint", BlueprintOverlayRenderer2.OVERLAY);
-        }
+        // overlay registration temporarily disabled for 1.18.2 port
     }
 }

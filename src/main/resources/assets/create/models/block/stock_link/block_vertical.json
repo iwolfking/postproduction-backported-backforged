@@ -6,13 +6,13 @@
 	"textures": {
 		"particle": "create:block/brass_casing"
 	},
-	"children": {
+	"parts": {
 		"base": {
 			"render_type": "minecraft:cutout_mipped",
 			"textures": {
 				"0": "create:block/link_base_unpowered",
 				"1": "create:block/link_details",
-				"particle": "create:block/vault/vault_front_small"
+				"particle": "create:block/brass_casing"
 			},
 			"elements": [
 				{

@@ -1,11 +1,13 @@
 package moe.paring.createlogisticsbackport.content.logistics.tableCloth;
 
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBehaviour;
 import com.simibubi.create.content.logistics.filter.FilterItem;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBoard;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsFormatter;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.utility.Lang;
 import moe.paring.createlogisticsbackport.polyfill.behaviour.ValueSettingsBoard2;
+import moe.paring.createlogisticsbackport.polyfill.behaviour.ValueSettingsBehaviour2;
 import moe.paring.createlogisticsbackport.polyfill.behaviour.ValueSettingsFormatter2;
 import moe.paring.createlogisticsbackport.polyfill.behaviour.filtering.FilteringBehaviour2;
 import net.minecraft.core.Direction;
@@ -67,7 +69,7 @@ public class TableClothFilteringBehaviour extends FilteringBehaviour2 {
 	}
 
 	@Override
-	public void setValueSettings(Player player, ValueSettings2 settings, boolean ctrlDown) {
+	public void setValueSettings(Player player, ValueSettingsBehaviour2.ValueSettings2 settings, boolean ctrlDown) {
 		if (getValueSettings().equals(settings))
 			return;
 		count = Math.max(1, settings.value());
@@ -82,13 +84,13 @@ public class TableClothFilteringBehaviour extends FilteringBehaviour2 {
 			new ValueSettingsFormatter2(this::formatValue));
 	}
 
-	public MutableComponent formatValue(ValueSettings2 value) {
-		return Component.literal(String.valueOf(Math.max(1, value.value())));
+	public MutableComponent formatValue(ValueSettingsBehaviour2.ValueSettings2 value) {
+		return new net.minecraft.network.chat.TextComponent(String.valueOf(Math.max(1, value.value())));
 	}
 
 	@Override
 	public MutableComponent getCountLabelForValueBox() {
-		return Component.literal(isCountVisible() ? String.valueOf(count) : "");
+		return new net.minecraft.network.chat.TextComponent(isCountVisible() ? String.valueOf(count) : "");
 	}
 
 	@Override

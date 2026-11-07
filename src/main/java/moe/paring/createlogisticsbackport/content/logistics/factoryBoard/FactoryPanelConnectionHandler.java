@@ -45,7 +45,7 @@ public class FactoryPanelConnectionHandler {
         FactoryPanelBehaviour at = FactoryPanelBehaviour.at(level, connectingFrom);
         if (panel.getPanelPosition()
                 .equals(connectingFrom) || at == null) {
-            player.displayClientMessage(Component.empty(), true);
+            player.displayClientMessage(net.minecraft.network.chat.TextComponent.EMPTY, true);
             connectingFrom = null;
             connectingFromBox = null;
             return true;
@@ -58,7 +58,7 @@ public class FactoryPanelConnectionHandler {
                     .component(), true);
             connectingFrom = null;
             connectingFromBox = null;
-            AllSoundEvents.DENY.playAt(player.level(), player.blockPosition(), 1, 1, false);
+            AllSoundEvents.DENY.playAt(player.level, player.blockPosition(), 1, 1, false);
             return true;
         }
 
@@ -77,8 +77,8 @@ public class FactoryPanelConnectionHandler {
 
         connectingFrom = null;
         connectingFromBox = null;
-        player.level()
-                .playLocalSound(player.blockPosition(), SoundEvents.AMETHYST_BLOCK_PLACE, SoundSource.BLOCKS, 0.5f, 0.5f,
+        player.level
+                .playLocalSound(player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ(), SoundEvents.AMETHYST_BLOCK_PLACE, SoundSource.BLOCKS, 0.5f, 0.5f,
                         false);
 
         return true;
@@ -159,7 +159,7 @@ public class FactoryPanelConnectionHandler {
                 .closerThan(mc.player.blockPosition(), 16) || at == null) {
             connectingFrom = null;
             connectingFromBox = null;
-            mc.player.displayClientMessage(Component.empty(), true);
+            mc.player.displayClientMessage(net.minecraft.network.chat.TextComponent.EMPTY, true);
             return;
         }
 
@@ -185,7 +185,7 @@ public class FactoryPanelConnectionHandler {
                 .add(Vec3.atLowerCornerOf(bhr.getDirection()
                                 .getNormal())
                         .scale(1 / 32f));
-        BlockPos pos = BlockPos.containing(offsetPos);
+        BlockPos pos = new BlockPos(offsetPos);
         BlockState blockState = at.blockEntity.getBlockState();
         PanelSlot slot = FactoryPanelBlock.getTargetedSlot(pos, blockState, offsetPos);
         BlockPos diff = pos.subtract(connectingFrom.pos());
@@ -279,8 +279,8 @@ public class FactoryPanelConnectionHandler {
 
                 connectingFrom = null;
                 connectingFromBox = null;
-                mc.player.level()
-                        .playLocalSound(mc.player.blockPosition(), SoundEvents.AMETHYST_BLOCK_PLACE, SoundSource.BLOCKS,
+                mc.player.level
+                        .playLocalSound(mc.player.blockPosition().getX(), mc.player.blockPosition().getY(), mc.player.blockPosition().getZ(), SoundEvents.AMETHYST_BLOCK_PLACE, SoundSource.BLOCKS,
                                 0.5f, 0.5f, false);
                 return true;
             }

@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class InputEvents {
     @SubscribeEvent
-    public static void onClickInput(InputEvent.InteractionKeyMappingTriggered event) {
+    public static void onClickInput(InputEvent.ClickInputEvent event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.screen != null)
             return;

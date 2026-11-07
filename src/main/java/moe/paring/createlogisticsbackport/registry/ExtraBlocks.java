@@ -19,7 +19,6 @@ import moe.paring.createlogisticsbackport.content.decoration.CardboardBlockItem;
 import moe.paring.createlogisticsbackport.content.kinetics.chainConveyor.ChainConveyorBlock;
 import moe.paring.createlogisticsbackport.content.logistics.factoryBoard.FactoryPanelBlock;
 import moe.paring.createlogisticsbackport.content.logistics.factoryBoard.FactoryPanelBlockItem;
-import moe.paring.createlogisticsbackport.content.logistics.factoryBoard.FactoryPanelModel;
 import moe.paring.createlogisticsbackport.content.logistics.itemHatch.ItemHatchBlock;
 import moe.paring.createlogisticsbackport.content.logistics.packagePort.PackagePortItem;
 import moe.paring.createlogisticsbackport.content.logistics.packagePort.frogport.FrogportBlock;
@@ -36,10 +35,8 @@ import moe.paring.createlogisticsbackport.content.logistics.tableCloth.TableClot
 import moe.paring.createlogisticsbackport.content.redstone.deskBell.DeskBellBlock;
 import moe.paring.createlogisticsbackport.content.redstone.displayLink.source.FactoryGaugeDisplaySource;
 import moe.paring.createlogisticsbackport.foundation.data.BuilderTransformers2;
-import moe.paring.createlogisticsbackport.mixin.BlockLootSubProviderAccessor;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
@@ -47,7 +44,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -62,14 +59,13 @@ import static moe.paring.createlogisticsbackport.CreateLogisticsBackport.REGISTR
 
 public class ExtraBlocks {
     static {
-        Create.REGISTRATE.setCreativeTab(AllCreativeModeTabs.BASE_CREATIVE_TAB);
-    }
+            }
 
     public static final BlockEntry<ChainConveyorBlock> CHAIN_CONVEYOR =
             REGISTRATE.block("chain_conveyor", ChainConveyorBlock::new)
                     .initialProperties(SharedProperties::stone)
                     .properties(p -> p.noOcclusion()
-                            .mapColor(MapColor.PODZOL))
+                            .color(MaterialColor.PODZOL))
                     .transform(axeOrPickaxe())
                     .transform(BlockStressDefaults.setImpact(1))
                     .blockstate((c, p) -> p.simpleBlock(c.getEntry(), AssetLookup.partialBaseModel(c, p)))
@@ -90,7 +86,7 @@ public class ExtraBlocks {
             REGISTRATE.block("package_frogport", FrogportBlock::new)
                     .initialProperties(SharedProperties::softMetal)
                     .properties(p -> p.noOcclusion())
-                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
+                    .properties(p -> p.color(MaterialColor.TERRACOTTA_BLUE)
                             .sound(SoundType.NETHERITE_BLOCK))
                     .transform(pickaxeOnly())
                     .addLayer(() -> RenderType::cutoutMipped)
@@ -104,7 +100,7 @@ public class ExtraBlocks {
         String colourName = colour.getSerializedName();
         return REGISTRATE.block(colourName + "_postbox", p -> new PostboxBlock(p, colour))
                 .initialProperties(SharedProperties::wooden)
-                .properties(p -> p.mapColor(colour))
+                .properties(p -> p.color(colour.getMaterialColor()))
                 .transform(axeOnly())
                 .blockstate((c, p) -> {
                     p.horizontalBlock(c.get(), s -> {
@@ -117,19 +113,19 @@ public class ExtraBlocks {
                     });
                 })
                 .tag(ExtraBlockTags.POSTBOXES.tag)
-                .onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.create.package_postbox"))
+                .onRegisterAfter(Registry.ITEM_REGISTRY, v -> ItemDescription.useKey(v, "block.create.package_postbox"))
                 .item(PackagePortItem::new)
                 .recipe((c, p) -> {
-                    ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, c.get())
+                    ShapedRecipeBuilder.shaped(c.get())
                             .define('D', colour.getTag())
                             .define('B', Items.BARREL)
-                            .define('A', AllItems.ANDESITE_ALLOY)
+                            .define('A', AllItems.ANDESITE_ALLOY.get())
                             .pattern("D")
                             .pattern("B")
                             .pattern("A")
                             .unlockedBy("has_barrel", RegistrateRecipeProvider.has(Items.BARREL))
                             .save(p, Create.asResource("crafting/logistics/" + c.getName()));
-                    ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
+                    ShapelessRecipeBuilder.shapeless(c.get())
                             .requires(colour.getTag())
                             .requires(ExtraItemTags.POSTBOXES.tag)
                             .unlockedBy("has_postbox", RegistrateRecipeProvider.has(ExtraItemTags.POSTBOXES.tag))
@@ -151,7 +147,7 @@ public class ExtraBlocks {
     public static final BlockEntry<PackagerLinkBlock> STOCK_LINK =
             REGISTRATE.block("stock_link", PackagerLinkBlock::new)
                     .initialProperties(SharedProperties::softMetal)
-                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
+                    .properties(p -> p.color(MaterialColor.TERRACOTTA_BLUE)
                             .sound(SoundType.NETHERITE_BLOCK))
                     .transform(pickaxeOnly())
                     .blockstate(new PackagerLinkGenerator()::generate)
@@ -186,10 +182,8 @@ public class ExtraBlocks {
                     .addLayer(() -> RenderType::cutoutMipped)
                     .initialProperties(SharedProperties::copperMetal)
                     .properties(p -> p.noOcclusion())
-                    .properties(p -> p.forceSolidOn())
                     .transform(pickaxeOnly())
                     .blockstate((c, p) -> p.horizontalFaceBlock(c.get(), AssetLookup.partialBaseModel(c, p)))
-                    .onRegister(CreateRegistrate.blockModel(() -> FactoryPanelModel::new))
                     .onRegister(assignDataBehaviour(new FactoryGaugeDisplaySource(), "gauge_status"))
                     .item(FactoryPanelBlockItem::new)
                     .model(AssetLookup::customItemModel)
@@ -200,14 +194,14 @@ public class ExtraBlocks {
         String colourName = colour.getSerializedName();
         return REGISTRATE.block(colourName + "_table_cloth", p -> new TableClothBlock(p, colour))
                 .transform(BuilderTransformersExtra.tableCloth(colourName, () -> Blocks.BLACK_CARPET, true))
-                .properties(p -> p.mapColor(colour))
+                .properties(p -> p.color(colour.getMaterialColor()))
                 .recipe((c, p) -> {
-                    ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get(), 2)
+                    ShapelessRecipeBuilder.shapeless(c.get(), 2)
                             .requires(DyeHelper.getWoolOfDye(colour))
-                            .requires(AllItems.ANDESITE_ALLOY)
+                            .requires(AllItems.ANDESITE_ALLOY.get())
                             .unlockedBy("has_wool", RegistrateRecipeProvider.has(ItemTags.WOOL))
                             .save(p, Create.asResource("crafting/logistics/" + c.getName()));
-                    ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
+                    ShapelessRecipeBuilder.shapeless(c.get())
                             .requires(colour.getTag())
                             .requires(ExtraItemTags.DYED_TABLE_CLOTHS.tag)
                             .unlockedBy("has_postbox", RegistrateRecipeProvider.has(ExtraItemTags.DYED_TABLE_CLOTHS.tag))
@@ -219,20 +213,20 @@ public class ExtraBlocks {
     public static final BlockEntry<TableClothBlock> ANDESITE_TABLE_CLOTH =
             REGISTRATE.block("andesite_table_cloth", p -> new TableClothBlock(p, "andesite"))
                     .transform(BuilderTransformersExtra.tableCloth("andesite", SharedProperties::stone, false))
-                    .properties(p -> p.mapColor(MapColor.STONE)
+                    .properties(p -> p.color(MaterialColor.STONE)
                             .requiresCorrectToolForDrops())
                     .recipe((c, p) -> p.stonecutting(DataIngredient.items(AllItems.ANDESITE_ALLOY.get()),
-                            RecipeCategory.DECORATIONS, c::get, 2))
+                            c::get, 2))
                     .transform(pickaxeOnly())
                     .register();
 
     public static final BlockEntry<TableClothBlock> BRASS_TABLE_CLOTH =
             REGISTRATE.block("brass_table_cloth", p -> new TableClothBlock(p, "brass"))
                     .transform(BuilderTransformersExtra.tableCloth("brass", SharedProperties::softMetal, false))
-                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW)
+                    .properties(p -> p.color(MaterialColor.TERRACOTTA_YELLOW)
                             .requiresCorrectToolForDrops())
                     .recipe((c, p) -> p.stonecutting(DataIngredient.tag(AllTags.forgeItemTag("ingots/brass")),
-                            RecipeCategory.DECORATIONS, c::get, 2))
+                            c::get, 2))
                     .transform(pickaxeOnly())
                     .register();
 
@@ -241,16 +235,15 @@ public class ExtraBlocks {
                     .transform(BuilderTransformersExtra.tableCloth("copper", SharedProperties::copperMetal, false))
                     .properties(p -> p.requiresCorrectToolForDrops())
                     .recipe((c, p) -> p.stonecutting(DataIngredient.tag(AllTags.forgeItemTag("ingots/copper")),
-                            RecipeCategory.DECORATIONS, c::get, 2))
+                            c::get, 2))
                     .transform(pickaxeOnly())
                     .register();
 
     public static final BlockEntry<CardboardBlock> CARDBOARD_BLOCK =
             REGISTRATE.block("cardboard_block", CardboardBlock::new)
                     .initialProperties(() -> Blocks.MUSHROOM_STEM)
-                    .properties(p -> p.mapColor(MapColor.COLOR_BROWN)
-                            .sound(SoundType.CHISELED_BOOKSHELF)
-                            .ignitedByLava())
+                    .properties(p -> p.color(MaterialColor.COLOR_BROWN)
+                            .sound(SoundType.WOOD))
                     .transform(axeOnly())
                     .blockstate(BlockStateGen.horizontalAxisBlockProvider(false))
                     .tag(Tags.Blocks.STORAGE_BLOCKS)
@@ -264,7 +257,7 @@ public class ExtraBlocks {
 
     public static final BlockEntry<ItemHatchBlock> ITEM_HATCH = REGISTRATE.block("item_hatch", ItemHatchBlock::new)
             .initialProperties(SharedProperties::softMetal)
-            .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
+            .properties(p -> p.color(MaterialColor.TERRACOTTA_BLUE)
                     .sound(SoundType.NETHERITE_BLOCK))
             .transform(pickaxeOnly())
             .addLayer(() -> RenderType::cutoutMipped)
@@ -287,28 +280,17 @@ public class ExtraBlocks {
     public static final BlockEntry<CardboardBlock> BOUND_CARDBOARD_BLOCK =
             REGISTRATE.block("bound_cardboard_block", CardboardBlock::new)
                     .initialProperties(() -> Blocks.MUSHROOM_STEM)
-                    .properties(p -> p.mapColor(MapColor.COLOR_BROWN)
-                            .sound(SoundType.CHISELED_BOOKSHELF)
-                            .ignitedByLava())
+                    .properties(p -> p.color(MaterialColor.COLOR_BROWN)
+                            .sound(SoundType.WOOD))
                     .transform(axeOnly())
                     .blockstate(BlockStateGen.horizontalAxisBlockProvider(false))
-                    .loot((r, b) -> r.add(b, LootTable.lootTable()
-                            .withPool(LootPool.lootPool()
-                                    .setRolls(ConstantValue.exactly(1.0F))
-                                    .add(LootItem.lootTableItem(b)
-                                            .when(BlockLootSubProviderAccessor.create$HAS_SILK_TOUCH())
-                                            .otherwise(r.applyExplosionCondition(b, LootItem.lootTableItem(Items.STRING)))))
-                            .withPool(r.applyExplosionCondition(b, LootPool.lootPool()
-                                    .setRolls(ConstantValue.exactly(1.0F))
-                                    .add(LootItem.lootTableItem(ExtraBlocks.CARDBOARD_BLOCK.asItem()))
-                                    .when(BlockLootSubProviderAccessor.create$HAS_SILK_TOUCH().invert())))))
                     .item(CardboardBlockItem::new)
                     .build()
                     .lang("Bound Block of Cardboard")
                     .register();
 
     public static final BlockEntry<DeskBellBlock> DESK_BELL = REGISTRATE.block("desk_bell", DeskBellBlock::new)
-            .properties(p -> p.mapColor(MapColor.SAND))
+            .properties(p -> p.color(MaterialColor.SAND))
             .blockstate((c, p) -> p.directionalBlock(c.get(), AssetLookup.forPowered(c, p)))
             .item()
             .transform(customItemModel("_", "block"))

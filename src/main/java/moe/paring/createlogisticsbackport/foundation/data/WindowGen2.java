@@ -25,7 +25,6 @@ import com.tterrag.registrate.util.nullness.NonNullFunction;
 import moe.paring.createlogisticsbackport.CreateLogisticsBackport;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -38,7 +37,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.Tags;
@@ -71,7 +70,7 @@ public class WindowGen2 {
 
     public static BlockBuilder<WindowBlock, CreateRegistrate> randomisedWindowBlock(String name,
                                                                                     Supplier<? extends ItemLike> ingredient, Supplier<Supplier<RenderType>> renderType, boolean translucent,
-                                                                                    Supplier<MapColor> color) {
+                                                                                    Supplier<MaterialColor> color) {
         ResourceLocation end_texture = Create.asResource(palettesDir() + name + "_end");
         ResourceLocation side_texture = Create.asResource(palettesDir() + name);
         Function<Integer, ResourceLocation> ends = i -> Create.asResource(palettesDir() + name + "_" + i + "_end");
@@ -96,7 +95,7 @@ public class WindowGen2 {
 
     public static BlockEntry<WindowBlock> customWindowBlock(String name, Supplier<? extends ItemLike> ingredient,
                                                             Supplier<CTSpriteShiftEntry> ct, Supplier<Supplier<RenderType>> renderType, boolean translucent,
-                                                            Supplier<MapColor> color) {
+                                                            Supplier<MaterialColor> color) {
         NonNullFunction<String, ResourceLocation> end_texture = n -> Create.asResource(palettesDir() + name + "_end");
         NonNullFunction<String, ResourceLocation> side_texture = n -> Create.asResource(palettesDir() + n);
         return windowBlock(name, ingredient, ct, renderType, translucent, end_texture, side_texture, color).register();
@@ -110,19 +109,19 @@ public class WindowGen2 {
                 $ -> new ResourceLocation("block/" + woodName + "_planks");
         NonNullFunction<String, ResourceLocation> side_texture = n -> Create.asResource(palettesDir() + n);
         return windowBlock(name, () -> planksBlock, () -> AllSpriteShifts.getWoodenWindow(woodType), renderType,
-                translucent, end_texture, side_texture, planksBlock::defaultMapColor).register();
+                translucent, end_texture, side_texture, planksBlock::defaultMaterialColor).register();
     }
 
     public static BlockBuilder<WindowBlock, CreateRegistrate> windowBlock(String name,
                                                                           Supplier<? extends ItemLike> ingredient, Supplier<CTSpriteShiftEntry> ct,
                                                                           Supplier<Supplier<RenderType>> renderType, boolean translucent,
                                                                           NonNullFunction<String, ResourceLocation> endTexture, NonNullFunction<String, ResourceLocation> sideTexture,
-                                                                          Supplier<MapColor> color) {
-        return CreateLogisticsBackport.REGISTRATE.block(name, p -> new WindowBlock(p, translucent))
+                                                                          Supplier<MaterialColor> color) {
+        return CreateLogisticsBackport.REGISTRATE.block(name, p -> new WindowBlock(p))
                 .onRegister(ct == null ? $ -> {
                 } : connectedTextures(() -> new HorizontalCTBehaviour(ct.get())))
                 .addLayer(renderType)
-                .recipe((c, p) -> ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, c.get(), 2)
+                .recipe((c, p) -> ShapedRecipeBuilder.shaped( c.get(), 2)
                         .pattern(" # ")
                         .pattern("#X#")
                         .define('#', ingredient.get())
@@ -131,7 +130,7 @@ public class WindowGen2 {
                         .save(p::accept))
                 .initialProperties(() -> Blocks.GLASS)
                 .properties(WindowGen2::glassProperties)
-                .properties(p -> p.mapColor(color.get()))
+                .properties(p -> p.color(color.get()))
                 .loot((t, g) -> t.dropWhenSilkTouch(g))
                 .blockstate((c, p) -> p.simpleBlock(c.get(), p.models()
                         .cubeColumn(c.getName(), sideTexture.apply(c.getName()), endTexture.apply(c.getName()))))
@@ -148,7 +147,7 @@ public class WindowGen2 {
                 .properties(WindowGen2::glassProperties)
                 .loot((t, g) -> t.dropWhenSilkTouch(g))
                 .recipe((c, p) -> p.stonecutting(DataIngredient.tag(Tags.Items.GLASS_COLORLESS),
-                        RecipeCategory.BUILDING_BLOCKS, c::get))
+                         c::get))
                 .blockstate((c, p) -> BlockStateGen.cubeAll(c, p, "palettes/", "framed_glass"))
                 .tag(Tags.Blocks.GLASS_COLORLESS, BlockTags.IMPERMEABLE)
                 .item()
@@ -243,18 +242,18 @@ public class WindowGen2 {
                 .onRegister(connectedTextures)
                 .addLayer(renderType)
                 .initialProperties(() -> Blocks.GLASS_PANE)
-                .properties(p -> p.mapColor(parent.get()
-                        .defaultMapColor()))
+                .properties(p -> p.color(parent.get()
+                        .defaultMaterialColor()))
                 .blockstate(stateProvider)
                 .recipe((c, p) -> {
-                    ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, c.get(), 16)
+                    ShapedRecipeBuilder.shaped( c.get(), 16)
                             .pattern("###")
                             .pattern("###")
                             .define('#', parent.get())
                             .unlockedBy("has_ingredient", RegistrateRecipeProvider.has(parent.get()))
                             .save(p::accept);
                     if (colorless)
-                        p.stonecutting(DataIngredient.tag(Tags.Items.GLASS_PANES_COLORLESS), RecipeCategory.BUILDING_BLOCKS,
+                        p.stonecutting(DataIngredient.tag(Tags.Items.GLASS_PANES_COLORLESS), 
                                 c::get);
                 })
                 .loot((t, g) -> t.dropWhenSilkTouch(g))

@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.content.logistics.itemHatch;
 
+import net.minecraftforge.items.CapabilityItemHandler;
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.AllSoundEvents;
@@ -18,7 +19,7 @@ import moe.paring.createlogisticsbackport.registry.ExtraSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.levelgen.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,7 +41,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -103,7 +104,7 @@ public class ItemHatchBlock extends HorizontalDirectionalBlock
 		BlockEntity blockEntity = pLevel.getBlockEntity(pPos.relative(pState.getValue(FACING)));
 		if (blockEntity == null)
 			return InteractionResult.FAIL;
-		LazyOptional<IItemHandler> optional = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER);
+		LazyOptional<IItemHandler> optional = blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 		IItemHandler targetInv = optional.orElse(null);
 		if (targetInv == null)
 			return InteractionResult.FAIL;
@@ -170,7 +171,7 @@ public class ItemHatchBlock extends HorizontalDirectionalBlock
 	}
 
 	@Override
-	public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+	public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, java.util.Random pRandom) {
 		if (pState.getValue(OPEN))
 			pLevel.setBlockAndUpdate(pPos, pState.setValue(OPEN, false));
 	}

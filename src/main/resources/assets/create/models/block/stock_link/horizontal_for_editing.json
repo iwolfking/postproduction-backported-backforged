@@ -3,7 +3,7 @@
 	"textures": {
 		"0": "create:block/link_base_unpowered",
 		"1": "create:block/link_details",
-		"particle": "create:block/vault/vault_front_small"
+		"particle": "create:block/brass_casing"
 	},
 	"elements": [
 		{
@@ -104,25 +104,25 @@
 			"name": "base",
 			"origin": [1, 1, 1],
 			"color": 0,
-			"children": [0, 1]
+			"parts": [0, 1]
 		},
 		{
 			"name": "details",
 			"origin": [4, 6, 11],
 			"color": 0,
-			"children": [2, 3, 4]
+			"parts": [2, 3, 4]
 		},
 		{
 			"name": "bulb",
 			"origin": [3, 6, 8],
 			"color": 0,
-			"children": [5]
+			"parts": [5]
 		},
 		{
 			"name": "antenna",
 			"origin": [8, 6, 6],
 			"color": 0,
-			"children": [6, 7]
+			"parts": [6, 7]
 		}
 	]
 }

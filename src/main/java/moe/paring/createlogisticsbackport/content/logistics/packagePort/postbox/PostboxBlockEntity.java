@@ -48,14 +48,13 @@ public class PostboxBlockEntity extends PackagePortBlockEntity {
 
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
-		if (computerBehaviour.isPeripheralCap(cap))
+		if (computerBehaviour != null && computerBehaviour.isPeripheralCap(cap))
 			return computerBehaviour.getPeripheralCapability();
 		return super.getCapability(cap, side);
 	}
 
 	@Override
-	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-		behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
+	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {        computerBehaviour = null;
 		super.addBehaviours(behaviours);
 	}
 
@@ -92,7 +91,7 @@ public class PostboxBlockEntity extends PackagePortBlockEntity {
 	protected void onOpenChange(boolean open) {
 		level.setBlockAndUpdate(worldPosition, getBlockState().setValue(PostboxBlock.OPEN, open));
 		level.playSound(null, worldPosition, open ? SoundEvents.BARREL_OPEN : SoundEvents.BARREL_CLOSE,
-			SoundSource.BLOCKS);
+			SoundSource.BLOCKS, 1f, 1f);
 	}
 
 	public void spawnParticles() {
@@ -137,7 +136,7 @@ public class PostboxBlockEntity extends PackagePortBlockEntity {
 	@Override
 	public void invalidateCaps() {
 		super.invalidate();
-		computerBehaviour.removePeripheral();
+		if (computerBehaviour != null) computerBehaviour.removePeripheral();
 	}
 
 }

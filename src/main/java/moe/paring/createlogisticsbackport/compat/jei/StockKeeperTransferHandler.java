@@ -9,10 +9,10 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
-import mezz.jei.common.transfer.RecipeTransferOperationsResult;
-import mezz.jei.common.transfer.RecipeTransferUtil;
-import mezz.jei.library.transfer.RecipeTransferErrorMissingSlots;
-import mezz.jei.library.transfer.RecipeTransferErrorTooltip;
+import mezz.jei.transfer.RecipeTransferOperationsResult;
+import mezz.jei.transfer.RecipeTransferUtil;
+import mezz.jei.transfer.RecipeTransferErrorMissingSlots;
+import mezz.jei.transfer.RecipeTransferErrorTooltip;
 import moe.paring.createlogisticsbackport.content.logistics.BigItemStack;
 import moe.paring.createlogisticsbackport.content.logistics.packager.InventorySummary;
 import moe.paring.createlogisticsbackport.content.logistics.stockTicker.CraftableBigItemStack;
@@ -48,23 +48,18 @@ public class StockKeeperTransferHandler implements IRecipeTransferHandler<StockK
     }
 
     @Override
-    public Class<? extends StockKeeperRequestMenu> getContainerClass() {
+    public Class<StockKeeperRequestMenu> getContainerClass() {
         return StockKeeperRequestMenu.class;
     }
 
     @Override
-    public Optional<MenuType<StockKeeperRequestMenu>> getMenuType() {
-        return Optional.of(ExtraMenuTypes.STOCK_KEEPER_REQUEST.get());
-    }
-
-    @Override
-    public RecipeType<Object> getRecipeType() {
-        return null;
+    public Class<Object> getRecipeClass() {
+        return Object.class;
     }
 
     @Override
     public @Nullable IRecipeTransferError transferRecipe(StockKeeperRequestMenu container, Object object, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
-        Level level = player.level();
+        Level level = player.level;
         if (!(object instanceof Recipe<?> recipe)) return null;
         MutableObject<IRecipeTransferError> result = new MutableObject<>();
         if (level.isClientSide())
@@ -95,7 +90,9 @@ public class StockKeeperTransferHandler implements IRecipeTransferHandler<StockK
         Map<Slot, ItemStack> availableItemStacks = new HashMap<>();
         for (int j = 0; j < stacksByCount.size(); j++) {
             BigItemStack bigItemStack = stacksByCount.get(j);
-            availableItemStacks.put(new Slot(inputDummy, j, 0, 0), bigItemStack.stack.copyWithCount(bigItemStack.count));
+            ItemStack availableStack = bigItemStack.stack.copy();
+            availableStack.setCount(bigItemStack.count);
+            availableItemStacks.put(new Slot(inputDummy, j, 0, 0), availableStack);
         }
 
         RecipeTransferOperationsResult transferOperations = RecipeTransferUtil.getRecipeTransferOperations(helpers.getStackHelper(), availableItemStacks, recipeSlots.getSlotViews(RecipeIngredientRole.INPUT), craftingSlots);
@@ -105,7 +102,7 @@ public class StockKeeperTransferHandler implements IRecipeTransferHandler<StockK
 
         if (!doTransfer) return null;
 
-        ItemStack result = recipe.getResultItem(player.level().registryAccess());
+        ItemStack result = recipe.getResultItem();
 
         if (result.isEmpty()) return null;
 

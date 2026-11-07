@@ -42,7 +42,7 @@ public class FrogportRenderer extends SmartBlockEntityRenderer<FrogportBlockEnti
         Vec3 diff = Vec3.ZERO;
 
         if (blockEntity.addressFilter != null && !blockEntity.addressFilter.isBlank()) {
-            renderNameplateOnHover(blockEntity, Component.literal(blockEntity.addressFilter), 1, ms, buffer, light);
+            renderNameplateOnHover(blockEntity, new net.minecraft.network.chat.TextComponent(blockEntity.addressFilter), 1, ms, buffer, light);
         }
 
         if (Backend.canUseInstancing(blockEntity.getLevel())) {

@@ -6,7 +6,6 @@ import moe.paring.createlogisticsbackport.content.logistics.box.PackageItem;
 import moe.paring.createlogisticsbackport.content.logistics.packager.InventorySummary;
 import moe.paring.createlogisticsbackport.content.logistics.stockTicker.PackageOrderWithCrafts;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
@@ -43,7 +42,7 @@ public class PackageRepackageHelper {
 		return collectedOrderId;
 	}
 
-	public List<BigItemStack> repack(int orderId, RandomSource r) {
+	public List<BigItemStack> repack(int orderId, java.util.Random r) {
 		List<BigItemStack> exportingPackages = new ArrayList<>();
 		String address = "";
 		PackageOrderWithCrafts orderContext = null;
@@ -172,7 +171,7 @@ public class PackageRepackageHelper {
 		return true;
 	}
 
-	protected List<BigItemStack> repackBasedOnRecipes(InventorySummary summary, PackageOrderWithCrafts order, String address, RandomSource r) {
+	protected List<BigItemStack> repackBasedOnRecipes(InventorySummary summary, PackageOrderWithCrafts order, String address, java.util.Random r) {
 		if (order.orderedCrafts().isEmpty())
 			return List.of();
 		
@@ -193,7 +192,7 @@ public class PackageRepackageHelper {
 			ItemStackHandler target = new ItemStackHandler(PackageItem.SLOTS);
 			List<BigItemStack> stacks = craftingEntry.pattern().stacks();
 			for (int currentSlot = 0; currentSlot < Math.min(stacks.size(), target.getSlots()); currentSlot++)
-				target.setStackInSlot(currentSlot, stacks.get(currentSlot).stack.copyWithCount(1));
+				target.setStackInSlot(currentSlot, moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(stacks.get(currentSlot).stack, 1));
 			
 			ItemStack box = PackageItem.containing(target);
 			PackageItem.setOrder(box, r.nextInt(), 0, true, 0, true,

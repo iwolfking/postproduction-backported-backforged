@@ -1,5 +1,7 @@
 package moe.paring.createlogisticsbackport.polyfill.behaviour;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.simibubi.create.AllKeys;
@@ -13,7 +15,6 @@ import com.simibubi.create.foundation.utility.AnimationTickHolder;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Lang;
 import moe.paring.createlogisticsbackport.registry.ExtraPackets;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -127,7 +128,7 @@ public class ValueSettingsScreen2 extends AbstractSimiScreen {
     }
 
     @Override
-    protected void renderWindow(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    protected void renderWindow(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         int x = guiLeft;
         int y = guiTop;
         int milestoneCount = board.maxValue() / board.milestoneInterval() + 1;
@@ -160,8 +161,8 @@ public class ValueSettingsScreen2 extends AbstractSimiScreen {
 
         if (fadeInWidth > fattestLabel) {
             int textX = x - 11 - fatTipOffset + bgWidth / 2;
-            graphics.drawString(font, title, textX - font.width(title) / 2, y - 14, 0xdddddd, false);
-            graphics.drawString(font, tip, textX - font.width(tip) / 2, y + windowHeight + additionalHeight - 27,
+            moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, title, textX - font.width(title) / 2, y - 14, 0xdddddd, false);
+            moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, tip, textX - font.width(tip) / 2, y + windowHeight + additionalHeight - 27,
                     0xdddddd, false);
         }
 
@@ -181,7 +182,7 @@ public class ValueSettingsScreen2 extends AbstractSimiScreen {
                     UIRenderHelper.drawCropped(graphics, valueBarX + w, y + 1,
                             Math.min(AllGuiTextures.VALUE_SETTINGS_BAR.width - 1, valueBarWidth - w), 8, zLevel,
                             AllGuiTextures.VALUE_SETTINGS_BAR);
-                graphics.drawString(font, component, x, y + 1, 0x442000, false);
+                moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, component, x, y + 1, 0x442000, false);
             }
 
             int milestoneX = valueBarX;
@@ -236,7 +237,7 @@ public class ValueSettingsScreen2 extends AbstractSimiScreen {
             cursorIcon.render(graphics, cursorX + 1, cursorY - 1);
             RenderSystem.setShaderColor(1, 1, 1, 1);
             if (fadeInWidth > fattestLabel)
-                graphics.drawString(font, cursorText, x - 11 - fatTipOffset + (bgWidth - font.width(cursorText)) / 2,
+                moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, cursorText, x - 11 - fatTipOffset + (bgWidth - font.width(cursorText)) / 2,
                         originalY + windowHeight + additionalHeight - 40, 0xFBDC7D, false);
             return;
         }
@@ -246,10 +247,10 @@ public class ValueSettingsScreen2 extends AbstractSimiScreen {
                 AllGuiTextures.VALUE_SETTINGS_CURSOR);
         AllGuiTextures.VALUE_SETTINGS_CURSOR_RIGHT.render(graphics, cursorX + cursorWidth, cursorY);
 
-        graphics.drawString(font, cursorText, cursorX + 2, cursorY + 3, 0x442000, false);
+        moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, cursorText, cursorX + 2, cursorY + 3, 0x442000, false);
     }
 
-    protected void renderBrassFrame(GuiGraphics graphics, int x, int y, int w, int h) {
+    protected void renderBrassFrame(PoseStack graphics, int x, int y, int w, int h) {
         AllGuiTextures.BRASS_FRAME_TL.render(graphics, x, y);
         AllGuiTextures.BRASS_FRAME_TR.render(graphics, x + w - 4, y);
         AllGuiTextures.BRASS_FRAME_BL.render(graphics, x, y + h - 4);
@@ -270,9 +271,9 @@ public class ValueSettingsScreen2 extends AbstractSimiScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics) {
+    public void renderBackground(PoseStack graphics) {
         int a = ((int) (0x50 * Math.min(1, (ticksOpen + AnimationTickHolder.getPartialTicks()) / 20f))) << 24;
-        graphics.fillGradient(0, 0, this.width, this.height, 0x101010 | a, 0x101010 | a);
+        moe.paring.createlogisticsbackport.DrawHelper.fillGradient(graphics, 0, 0, this.width, this.height, 0x101010 | a, 0x101010 | a);
     }
 
     @Override

@@ -3,7 +3,7 @@
 	"textures": {
 		"1": "create:block/packager_details",
 		"3": "create:block/packager_iris_closed",
-		"particle": "create:block/vault/vault_front_small"
+		"particle": "create:block/brass_casing"
 	},
 	"elements": [
 		{
@@ -25,7 +25,7 @@
 			"name": "door",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [0]
+			"parts": [0]
 		}
 	]
 }

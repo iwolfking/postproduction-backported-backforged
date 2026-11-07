@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.content.logistics.packager;
 
+import net.minecraftforge.items.CapabilityItemHandler;
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
@@ -23,7 +24,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.SignalGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.items.IItemHandler;
 
@@ -59,7 +59,7 @@ public class PackagerBlock extends WrenchableDirectionalBlock implements IBE<Pac
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		Capability<IItemHandler> itemCap = ForgeCapabilities.ITEM_HANDLER;
+		Capability<IItemHandler> itemCap = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 		Direction preferredFacing = null;
 		for (Direction face : context.getNearestLookingDirections()) {
 			BlockEntity be = context.getLevel()
@@ -177,11 +177,6 @@ public class PackagerBlock extends WrenchableDirectionalBlock implements IBE<Pac
 	@Override
 	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		IBE.onRemove(pState, pLevel, pPos, pNewState);
-	}
-
-	@Override
-	public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
-		return false;
 	}
 
 	@Override

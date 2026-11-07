@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 public enum AllToolMaterials implements Tier {
 
 	CARDBOARD(Create.asResource("cardboard")
-		.toString(), 0, 1, 2, 1, () -> Ingredient.of(ExtraItems.CARDBOARD.asItem()));
+		.toString(), 0, 1, 2, 1, () -> Ingredient.of(ExtraItems.CARDBOARD.get()));
 
 	public String name;
 

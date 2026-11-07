@@ -7,7 +7,7 @@ import com.simibubi.create.foundation.utility.Iterate;
 import moe.paring.createlogisticsbackport.accessor.ItemVaultBlockEntityMixinAccessor;
 import moe.paring.createlogisticsbackport.api.packager.InventoryIdentifier;
 import moe.paring.createlogisticsbackport.api.registry.SimpleRegistry;
-import moe.paring.createlogisticsbackport.registry.ExtraBlockTags;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.WorldlyContainer;
@@ -27,9 +27,8 @@ import java.util.Set;
 public class AllInventoryIdentifiers {
     public static void registerDefaults() {
         // identify known single blocks
-        InventoryIdentifier.REGISTRY.registerProvider(SimpleRegistry.Provider.forBlockTag(
-                ExtraBlockTags.SINGLE_BLOCK_INVENTORIES.tag, AllInventoryIdentifiers::single
-        ));
+        // (single-block inventories temporarily disabled pending SimpleRegistry port)
+
 
         // connect double chests
         InventoryIdentifier.REGISTRY.registerProvider(block -> {

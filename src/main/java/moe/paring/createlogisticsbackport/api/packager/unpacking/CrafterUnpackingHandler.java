@@ -53,7 +53,7 @@ public enum CrafterUnpackingHandler implements UnpackingHandler {
 			// go through each item in the box and try insert if it matches the target
 			for (ItemStack stack : items) {
 				if (ItemHandlerHelper.canItemStacksStack(stack, targetStack.stack)) {
-					ItemStack toInsert = stack.copyWithCount(1);
+					ItemStack toInsert = moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(stack, 1);
 					if (inventory.insertItem(0, toInsert, simulate).isEmpty()) {
 						stack.shrink(1);
 						// one item per crafter, move to next once successful

@@ -45,7 +45,7 @@ public class AddressEditBoxHelper {
 		Set<String> alreadyAdded = new HashSet<>();
 
 		DestinationSuggestions2 destinationSuggestions = new DestinationSuggestions2(mc, screen, pInput, mc.font, options,
-			anchorToBottom, -72 + pInput.getY() + (anchorToBottom ? 0 : pInput.getHeight()));
+			anchorToBottom, -72 + pInput.y + (anchorToBottom ? 0 : pInput.getHeight()));
 
 		if (player == null)
 			return destinationSuggestions;

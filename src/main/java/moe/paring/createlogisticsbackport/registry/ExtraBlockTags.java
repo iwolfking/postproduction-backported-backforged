@@ -25,7 +25,7 @@ public enum ExtraBlockTags {
     ;
 
     ExtraBlockTags(String id) {
-        tag = BlockTags.create(ResourceLocation.fromNamespaceAndPath(Create.ID, id));
+        tag = BlockTags.create(new ResourceLocation(Create.ID, id));
     }
 
     @SuppressWarnings("deprecation")

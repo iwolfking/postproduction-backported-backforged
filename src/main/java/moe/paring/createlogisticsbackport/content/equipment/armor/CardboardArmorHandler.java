@@ -6,7 +6,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingVisibilityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -30,15 +30,15 @@ public class CardboardArmorHandler {
 
 	@SubscribeEvent
 	public static void playersStealthWhenWearingCardboard(LivingVisibilityEvent event) {
-		LivingEntity entity = event.getEntity();
+		LivingEntity entity = event.getEntityLiving();
 		if (!testForStealth(entity))
 			return;
 		event.modifyVisibility(0);
 	}
 
 	@SubscribeEvent
-	public static void mobsMayLoseTargetWhenItIsWearingCardboard(LivingTickEvent event) {
-		LivingEntity entity = event.getEntity();
+	public static void mobsMayLoseTargetWhenItIsWearingCardboard(TickEvent.PlayerTickEvent event) {
+		LivingEntity entity = event.player;
 		if (entity.tickCount % 16 != 0)
 			return;
 		if (!(entity instanceof Mob mob))
@@ -54,7 +54,7 @@ public class CardboardArmorHandler {
 					});
 		}
 
-		if (entity instanceof NeutralMob nMob && entity.level() instanceof ServerLevel sl) {
+		if (entity instanceof NeutralMob nMob && entity.level instanceof ServerLevel sl) {
 			UUID uuid = nMob.getPersistentAngerTarget();
 			if (uuid != null && testForStealth(sl.getEntity(uuid)))
 				nMob.stopBeingAngry();

@@ -47,7 +47,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent;
 
 import java.util.UUID;
 
@@ -178,7 +178,7 @@ public class FactoryPanelBlock extends FaceAttachedHorizontalDirectionalBlock
 		if (pPlacer == null)
 			return;
 		AdvancementBehaviour.setPlacedBy(pLevel, pPos, pPlacer);
-		double range = pPlacer.getAttribute(ForgeMod.BLOCK_REACH.get())
+		double range = pPlacer.getAttribute(ForgeMod.REACH_DISTANCE.get())
 			.getValue() + 1;
 		HitResult hitResult = pPlacer.pick(range, 1, false);
 		Vec3 location = hitResult.getLocation();
@@ -215,7 +215,7 @@ public class FactoryPanelBlock extends FaceAttachedHorizontalDirectionalBlock
 			if (!fpbe.addPanel(newSlot, LogisticallyLinkedBlockItem.networkFromStack(FactoryPanelBlockItem.fixCtrlCopiedStack(item))))
 				return;
 			pPlayer.displayClientMessage(Lang.translateDirect("logistically_linked.connected"), true);
-			pLevel.playSound(null, pPos, soundType.getPlaceSound(), SoundSource.BLOCKS);
+			pLevel.playSound(null, pPos, soundType.getPlaceSound(), SoundSource.BLOCKS, 1f, 1f);
 			if (pPlayer.isCreative())
 				return;
 			item.shrink(1);
@@ -235,7 +235,7 @@ public class FactoryPanelBlock extends FaceAttachedHorizontalDirectionalBlock
 	}
 
 	private boolean tryDestroySubPanelFirst(BlockState state, Level level, BlockPos pos, Player player) {
-		double range = player.getAttribute(ForgeMod.BLOCK_REACH.get())
+		double range = player.getAttribute(ForgeMod.REACH_DISTANCE.get())
 			.getValue() + 1;
 		HitResult hitResult = player.pick(range, 1, false);
 		Vec3 location = hitResult.getLocation();

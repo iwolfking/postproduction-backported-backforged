@@ -23,7 +23,7 @@ public abstract class SlidingDoorMovementBehaviourMixin {
         boolean shouldOpen = shouldOpen(context);
 
         Direction facing = getDoorFacing(context);
-        BlockPos inWorldDoor = BlockPos.containing(context.position)
+        BlockPos inWorldDoor = new BlockPos(context.position)
                 .relative(facing);
         BlockState inWorldDoorState = context.world.getBlockState(inWorldDoor);
         if (inWorldDoorState.getBlock() instanceof DoorBlock db && inWorldDoorState.hasProperty(DoorBlock.OPEN))

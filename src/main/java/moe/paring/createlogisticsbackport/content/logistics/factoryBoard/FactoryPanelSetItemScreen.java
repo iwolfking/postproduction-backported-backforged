@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.content.logistics.factoryBoard;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
@@ -9,7 +10,6 @@ import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.utility.Lang;
 import moe.paring.createlogisticsbackport.registry.ExtraBlocks;
 import moe.paring.createlogisticsbackport.registry.ExtraGuiTextures;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -46,20 +46,20 @@ public class FactoryPanelSetItemScreen extends AbstractSimiContainerScreen<Facto
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
+	protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pMouseX, int pMouseY) {
 		int x = getGuiLeft();
 		int y = getGuiTop();
-		ExtraGuiTextures.FACTORY_GAUGE_SET_ITEM.render(pGuiGraphics, x - 5, y);
-		renderPlayerInventory(pGuiGraphics, x + 5, y + 94);
+		ExtraGuiTextures.FACTORY_GAUGE_SET_ITEM.render(pPoseStack, x - 5, y);
+		renderPlayerInventory(pPoseStack, x + 5, y + 94);
 
 		ItemStack stack = ExtraBlocks.FACTORY_GAUGE.asStack();
 		Component title = Lang.translate("gui.factory_panel.place_item_to_monitor")
 			.component();
-		pGuiGraphics.drawString(font, title, x + imageWidth / 2 - font.width(title) / 2 - 5, y + 4, 0x3D3C48, false);
+		moe.paring.createlogisticsbackport.DrawHelper.drawString(pPoseStack,font, title, x + imageWidth / 2 - font.width(title) / 2 - 5, y + 4, 0x3D3C48, false);
 
 		GuiGameElement.of(stack)
 			.scale(3)
-			.render(pGuiGraphics, x + 180, y + 48);
+			.render(pPoseStack, x + 180, y + 48);
 	}
 	
 	@Override

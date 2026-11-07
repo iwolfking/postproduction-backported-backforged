@@ -14,16 +14,16 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import moe.paring.createlogisticsbackport.BuilderTransformersExtra;
 import moe.paring.createlogisticsbackport.content.equipment.armor.CardboardArmorItem;
 import moe.paring.createlogisticsbackport.content.equipment.armor.CardboardHelmetItem;
-import moe.paring.createlogisticsbackport.content.equipment.armor.TrimmableArmorModelGenerator;
 import moe.paring.createlogisticsbackport.content.logistics.box.PackageItem;
 import moe.paring.createlogisticsbackport.content.logistics.box.PackageStyles;
 import moe.paring.createlogisticsbackport.content.logistics.filter.FilterItem2;
 import moe.paring.createlogisticsbackport.content.logistics.tableCloth.ShoppingListItem;
 import moe.paring.createlogisticsbackport.content.tool.CardboardSwordItem;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.EquipmentSlot;
 
 import static com.simibubi.create.AllTags.AllItemTags.PLATES;
 import static com.simibubi.create.AllTags.forgeItemTag;
@@ -32,7 +32,7 @@ import static moe.paring.createlogisticsbackport.CreateLogisticsBackport.REGISTR
 @SuppressWarnings("unused")
 public class ExtraItems {
     static {
-        Create.REGISTRATE.setCreativeTab(AllCreativeModeTabs.BASE_CREATIVE_TAB);
+        Create.REGISTRATE.creativeModeTab(() -> AllCreativeModeTabs.BASE_CREATIVE_TAB);
     }
 
     public static final ItemEntry<Item>
@@ -46,10 +46,10 @@ public class ExtraItems {
     public static final ItemEntry<FilterItem2> PACKAGE_FILTER = REGISTRATE.item("package_filter", FilterItem2::address).register();
 
     public static final ItemEntry<? extends BaseArmorItem>
-            CARDBOARD_HELMET = REGISTRATE.item("cardboard_helmet", p -> new CardboardHelmetItem(ArmorItem.Type.HELMET, p)).tag(forgeItemTag("armors/helmet"), ItemTags.TRIMMABLE_ARMOR).onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor")).model(TrimmableArmorModelGenerator::generate).register(),
-            CARDBOARD_CHESTPLATE = REGISTRATE.item("cardboard_chestplate", p -> new CardboardArmorItem(ArmorItem.Type.CHESTPLATE, p)).tag(forgeItemTag("armors/chestplate"), ItemTags.TRIMMABLE_ARMOR).onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor")).model(TrimmableArmorModelGenerator::generate).register(),
-            CARDBOARD_LEGGINGS = REGISTRATE.item("cardboard_leggings", p -> new CardboardArmorItem(ArmorItem.Type.LEGGINGS, p)).tag(forgeItemTag("armors/leggings"), ItemTags.TRIMMABLE_ARMOR).onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor")).model(TrimmableArmorModelGenerator::generate).register(),
-            CARDBOARD_BOOTS = REGISTRATE.item("cardboard_boots", p -> new CardboardArmorItem(ArmorItem.Type.BOOTS, p)).tag(forgeItemTag("armors/boots"), ItemTags.TRIMMABLE_ARMOR).onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor")).model(TrimmableArmorModelGenerator::generate).register();
+            CARDBOARD_HELMET = REGISTRATE.item("cardboard_helmet", p -> new CardboardHelmetItem(EquipmentSlot.HEAD, p)).tag(forgeItemTag("armors/helmet")).onRegisterAfter(Registry.ITEM_REGISTRY, v -> ItemDescription.useKey(v, "item.create.cardboard_armor")).register(),
+            CARDBOARD_CHESTPLATE = REGISTRATE.item("cardboard_chestplate", p -> new CardboardArmorItem(EquipmentSlot.CHEST, p)).tag(forgeItemTag("armors/chestplate")).onRegisterAfter(Registry.ITEM_REGISTRY, v -> ItemDescription.useKey(v, "item.create.cardboard_armor")).register(),
+            CARDBOARD_LEGGINGS = REGISTRATE.item("cardboard_leggings", p -> new CardboardArmorItem(EquipmentSlot.LEGS, p)).tag(forgeItemTag("armors/leggings")).onRegisterAfter(Registry.ITEM_REGISTRY, v -> ItemDescription.useKey(v, "item.create.cardboard_armor")).register(),
+            CARDBOARD_BOOTS = REGISTRATE.item("cardboard_boots", p -> new CardboardArmorItem(EquipmentSlot.FEET, p)).tag(forgeItemTag("armors/boots")).onRegisterAfter(Registry.ITEM_REGISTRY, v -> ItemDescription.useKey(v, "item.create.cardboard_armor")).register();
 
     public static final ItemEntry<CardboardSwordItem> CARDBOARD_SWORD =
             REGISTRATE.item("cardboard_sword", CardboardSwordItem::new)

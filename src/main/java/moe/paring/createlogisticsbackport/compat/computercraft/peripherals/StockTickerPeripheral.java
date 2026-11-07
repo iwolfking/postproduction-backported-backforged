@@ -1,7 +1,7 @@
 package moe.paring.createlogisticsbackport.compat.computercraft.peripherals;
 
 import com.simibubi.create.compat.computercraft.implementation.peripherals.SyncedPeripheral;
-import dan200.computercraft.api.detail.VanillaDetailRegistries;
+import dan200.computercraft.api.detail.DetailRegistries;
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
@@ -30,8 +30,8 @@ public class StockTickerPeripheral extends SyncedPeripheral<StockTickerBlockEnti
 			i++;
 			Map<String, Object> details = new HashMap<>(
 					detailed.isPresent() && detailed.get()
-							? VanillaDetailRegistries.ITEM_STACK.getDetails(entry.stack)
-							: VanillaDetailRegistries.ITEM_STACK.getBasicDetails(entry.stack));
+							? DetailRegistries.ITEM_STACK.getDetails(entry.stack)
+							: DetailRegistries.ITEM_STACK.getBasicDetails(entry.stack));
 			details.put("count", entry.count);
 			result.put(i, details);
 		}

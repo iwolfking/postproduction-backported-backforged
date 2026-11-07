@@ -18,27 +18,29 @@ import moe.paring.createlogisticsbackport.content.logistics.stockTicker.StockKee
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 import static moe.paring.createlogisticsbackport.CreateLogisticsBackport.REGISTRATE;
 
 public class ExtraMenuTypes {
     public static final MenuEntry<StockKeeperCategoryMenu> STOCK_KEEPER_CATEGORY =
-            register("stock_keeper_category", StockKeeperCategoryMenu::new, () -> StockKeeperCategoryScreen::new);
+            ExtraMenuTypes.<StockKeeperCategoryMenu, StockKeeperCategoryScreen>register("stock_keeper_category", StockKeeperCategoryMenu::new, () -> (menu, inv, title) -> new StockKeeperCategoryScreen(menu, inv, title));
 
     public static final MenuEntry<StockKeeperRequestMenu> STOCK_KEEPER_REQUEST =
-            register("stock_keeper_request", StockKeeperRequestMenu::new, () -> StockKeeperRequestScreen::new);
+            ExtraMenuTypes.<StockKeeperRequestMenu, StockKeeperRequestScreen>register("stock_keeper_request", StockKeeperRequestMenu::new, () -> (menu, inv, title) -> new StockKeeperRequestScreen(menu, (Inventory) inv, title));
 
     public static final MenuEntry<PackagePortMenu> PACKAGE_PORT =
-            register("package_port", PackagePortMenu::new, () -> PackagePortScreen::new);
+            ExtraMenuTypes.<PackagePortMenu, PackagePortScreen>register("package_port", PackagePortMenu::new, () -> (menu, inv, title) -> new PackagePortScreen(menu, inv, title));
 
     public static final MenuEntry<RedstoneRequesterMenu> REDSTONE_REQUESTER =
-            register("redstone_requester", RedstoneRequesterMenu::new, () -> RedstoneRequesterScreen::new);
+            ExtraMenuTypes.<RedstoneRequesterMenu, RedstoneRequesterScreen>register("redstone_requester", RedstoneRequesterMenu::new, () -> (menu, inv, title) -> new RedstoneRequesterScreen(menu, inv, title));
 
     public static final MenuEntry<PackageFilterMenu> PACKAGE_FILTER =
-            register("package_filter", PackageFilterMenu::new, () -> PackageFilterScreen::new);
+            ExtraMenuTypes.<PackageFilterMenu, PackageFilterScreen>register("package_filter", PackageFilterMenu::new, () -> (menu, inv, title) -> new PackageFilterScreen(menu, inv, title));
 
     public static final MenuEntry<FactoryPanelSetItemMenu> FACTORY_PANEL_SET_ITEM =
-            register("factory_panel_set_item", FactoryPanelSetItemMenu::new, () -> FactoryPanelSetItemScreen::new);
+            ExtraMenuTypes.<FactoryPanelSetItemMenu, FactoryPanelSetItemScreen>register("factory_panel_set_item", FactoryPanelSetItemMenu::new, () -> (menu, inv, title) -> new FactoryPanelSetItemScreen(menu, inv, title));
 
 
     private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(

@@ -239,21 +239,20 @@ public class PackageItem extends Item {
 
 		if (compoundnbt.contains("Address", Tag.TAG_STRING) && !compoundnbt.getString("Address")
 			.isBlank()) {
-			pTooltipComponents.add(Component.literal("\u2192 " + compoundnbt.getString("Address"))
-				.withStyle(ChatFormatting.GOLD));
+			pTooltipComponents.add(new net.minecraft.network.chat.TextComponent("\u2192 " + compoundnbt.getString("Address")).withStyle(ChatFormatting.GOLD));
 		}
 
 		/*
 		 * Debug Fragmentation Data if (compoundnbt.contains("Fragment")) { CompoundTag
 		 * fragTag = compoundnbt.getCompound("Fragment");
-		 * pTooltipComponents.add(Component.literal("Order Information (Temporary)")
-		 * .withStyle(ChatFormatting.GREEN)); pTooltipComponents.add(Components
+		 * pTooltipComponents.add(new net.minecraft.network.chat.TextComponent("Order Information (Temporary)")
+		 * .withStyle(ChatFormatting.GREEN))); pTooltipComponents.add(Components
 		 * .literal(" Link " + fragTag.getInt("LinkIndex") +
 		 * (fragTag.getBoolean("IsFinalLink") ? " Final" : "") + " | Fragment " +
 		 * fragTag.getInt("Index") + (fragTag.getBoolean("IsFinal") ? " Final" : ""))
 		 * .withStyle(ChatFormatting.DARK_GREEN)); if (fragTag.contains("OrderContext"))
-		 * pTooltipComponents.add(Component.literal("Has Context!")
-		 * .withStyle(ChatFormatting.DARK_GREEN)); }
+		 * pTooltipComponents.add(new net.minecraft.network.chat.TextComponent("Has Context!")
+		 * .withStyle(ChatFormatting.DARK_GREEN))); }
 		 */
 
 		if (!compoundnbt.contains("Items", Tag.TAG_COMPOUND))
@@ -282,7 +281,7 @@ public class PackageItem extends Item {
 		}
 
 		if (skippedNames > 0)
-			pTooltipComponents.add(Component.translatable("container.shulkerBox.more", skippedNames)
+			pTooltipComponents.add(new net.minecraft.network.chat.TranslatableComponent("container.shulkerBox.more", skippedNames)
 				.withStyle(ChatFormatting.ITALIC));
 	}
 
@@ -303,7 +302,7 @@ public class PackageItem extends Item {
 		ItemStackHandler contents = getContents(box);
 		ItemStack particle = box.copy();
 
-		playerIn.setItemInHand(handIn, box.getCount() <= 1 ? ItemStack.EMPTY : box.copyWithCount(box.getCount() - 1));
+		playerIn.setItemInHand(handIn, box.getCount() <= 1 ? ItemStack.EMPTY : moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(box, box.getCount() - 1));
 
 		if (!worldIn.isClientSide()) {
 			for (int i = 0; i < contents.getSlots(); i++) {
@@ -313,7 +312,7 @@ public class PackageItem extends Item {
 
 				if (itemstack.getItem() instanceof SpawnEggItem sei && worldIn instanceof ServerLevel sl) {
 					EntityType<?> entitytype = sei.getType(itemstack.getTag());
-					Entity entity = entitytype.spawn(sl, itemstack, null, BlockPos.containing(playerIn.position()
+					Entity entity = entitytype.spawn(sl, itemstack, null, new BlockPos(playerIn.position()
 							.add(playerIn.getLookAngle()
 								.multiply(1, 0, 1)
 								.normalize())),

@@ -1,7 +1,7 @@
 package moe.paring.createlogisticsbackport.content.logistics.itemHatch;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.simibubi.create.foundation.utility.AngleHelper;
 import com.simibubi.create.foundation.utility.VecHelper;
 import moe.paring.createlogisticsbackport.polyfill.behaviour.ValueBoxTransform2;
@@ -29,8 +29,8 @@ public class HatchFilterSlot extends ValueBoxTransform2 {
 
 	@Override
 	public void rotate(LevelAccessor level, BlockPos pos, BlockState state, PoseStack ms) {
-		ms.mulPose(Axis.YP.rotationDegrees(angle(state)));
-		ms.mulPose(Axis.XP.rotationDegrees(-45));
+		ms.mulPose(Vector3f.YP.rotationDegrees(angle(state)));
+		ms.mulPose(Vector3f.XP.rotationDegrees(-45));
 	}
 
 	private float angle(BlockState state) {

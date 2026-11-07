@@ -12,12 +12,12 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
+import java.util.Random;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelData.Builder;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import java.util.ArrayList;
@@ -36,9 +36,9 @@ public class CTModel2 extends BakedModelWrapperWithData {
 	}
 
 	@Override
-	protected Builder gatherModelData(Builder builder, BlockAndTintGetter world, BlockPos pos, BlockState state,
-		ModelData blockEntityData) {
-		return builder.with(CT_PROPERTY, createCTData(world, pos, state));
+	protected void gatherModelData(ModelDataMap.Builder builder, BlockAndTintGetter world, BlockPos pos, BlockState state,
+		IModelData blockEntityData) {
+		builder.withInitial(CT_PROPERTY, createCTData(world, pos, state));
 	}
 
 	protected CTData createCTData(BlockAndTintGetter world, BlockPos pos, BlockState state) {
@@ -61,12 +61,12 @@ public class CTModel2 extends BakedModelWrapperWithData {
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
-		List<BakedQuad> quads = super.getQuads(state, side, rand, extraData, renderType);
-		if (!extraData.has(CT_PROPERTY))
+	public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
+		List<BakedQuad> quads = super.getQuads(state, side, rand, extraData);
+		if (!extraData.hasProperty(CT_PROPERTY))
 			return quads;
 
-		CTData data = extraData.get(CT_PROPERTY);
+		CTData data = extraData.getData(CT_PROPERTY);
 		quads = new ArrayList<>(quads);
 
 		for (int i = 0; i < quads.size(); i++) {

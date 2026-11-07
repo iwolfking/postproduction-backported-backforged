@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.content.logistics.filter;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllPackets;
@@ -16,7 +17,6 @@ import moe.paring.createlogisticsbackport.polyfill.NewIconButton;
 import moe.paring.createlogisticsbackport.registry.ExtraGuiTextures;
 import moe.paring.createlogisticsbackport.registry.ExtraItems;
 import moe.paring.createlogisticsbackport.registry.ExtraPackets;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -67,7 +67,7 @@ public abstract class AbstractFilterScreen2<F extends AbstractFilterMenu> extend
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         int invX = getLeftOfCentered(PLAYER_INVENTORY.width);
         int invY = topPos + background.getHeight() + 4;
         renderPlayerInventory(graphics, invX, invY);
@@ -76,7 +76,7 @@ public abstract class AbstractFilterScreen2<F extends AbstractFilterMenu> extend
         int y = topPos;
 
         background.render(graphics, x, y);
-        graphics.drawString(font, title, x + (background.getWidth() - 8) / 2 - font.width(title) / 2, y + 4,
+        moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, title, x + (background.getWidth() - 8) / 2 - font.width(title) / 2, y + 4,
                 ExtraItems.PACKAGE_FILTER.isIn(menu.contentHolder) ? 0x3D3C48
                         : AllItems.FILTER.isIn(menu.contentHolder) ? 0x303030 : 0x592424,
                 false);

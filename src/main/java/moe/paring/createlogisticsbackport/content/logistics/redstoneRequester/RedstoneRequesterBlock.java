@@ -31,7 +31,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.SignalGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -72,11 +71,6 @@ public class RedstoneRequesterBlock extends Block implements IBE<RedstoneRequest
 	}
 
 	@Override
-	public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
-		return false;
-	}
-
-	@Override
 	public boolean hasAnalogOutputSignal(BlockState pState) {
 		return true;
 	}
@@ -104,7 +98,7 @@ public class RedstoneRequesterBlock extends Block implements IBE<RedstoneRequest
 		autoRequestData.encodedRequest = order;
 		autoRequestData.encodedTargetAdress = address;
 		autoRequestData.targetOffset = be.getBlockPos();
-		autoRequestData.targetDim = player.level()
+		autoRequestData.targetDim = player.level
 			.dimension()
 			.location()
 			.toString();
@@ -113,9 +107,9 @@ public class RedstoneRequesterBlock extends Block implements IBE<RedstoneRequest
 
 		if (isRequester) {
 			CompoundTag stackTag = stack.getTag();
-			CompoundTag beTag = stackTag.getCompound(BlockItem.BLOCK_ENTITY_TAG);
+			CompoundTag beTag = stackTag.getCompound("BlockEntityTag");
 			beTag.putUUID("Freq", be.behaviour.freqId);
-			stackTag.put(BlockItem.BLOCK_ENTITY_TAG, beTag);
+			stackTag.put("BlockEntityTag", beTag);
 		}
 
 		player.setItemInHand(InteractionHand.MAIN_HAND, stack);

@@ -121,18 +121,18 @@
 			"name": "group",
 			"origin": [9, 0.5, 7],
 			"color": 0,
-			"children": [0]
+			"parts": [0]
 		},
 		{
 			"name": "panel_with_bulb",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [
+			"parts": [
 				{
 					"name": "group",
 					"origin": [9, 0.5, 7],
 					"color": 0,
-					"children": [1, 2, 3, 4, 5, 6]
+					"parts": [1, 2, 3, 4, 5, 6]
 				}
 			]
 		}

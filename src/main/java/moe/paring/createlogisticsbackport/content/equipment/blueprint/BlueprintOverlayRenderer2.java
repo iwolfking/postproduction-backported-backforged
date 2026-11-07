@@ -21,8 +21,6 @@ import moe.paring.createlogisticsbackport.registry.ExtraGuiTextures;
 import moe.paring.createlogisticsbackport.registry.ExtraItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -33,8 +31,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -44,8 +40,6 @@ import java.util.List;
 import java.util.Map;
 
 public class BlueprintOverlayRenderer2 {
-
-    public static final IGuiOverlay OVERLAY = BlueprintOverlayRenderer2::renderOverlay;
 
     static BlueprintOverlayShopContext shopContext;
 
@@ -122,12 +116,11 @@ public class BlueprintOverlayRenderer2 {
 
         shopContext = new BlueprintOverlayShopContext(false, dce.getStockLevelForTrade(list), alreadyPurchased);
 
-            ingredients.add(Pair.of(dce.getPaymentItem()
-                        .copyWithCount(dce.getPaymentAmount()),
+            ingredients.add(Pair.of(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(dce.getPaymentItem(), dce.getPaymentAmount()),
                 !dce.getPaymentItem()
                         .isEmpty() && shopContext.stockLevel() > shopContext.purchases()));
         for (BigItemStack entry : dce.requestData.encodedRequest.stacks())
-            results.add(entry.stack.copyWithCount(entry.count));
+            results.add(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(entry.stack, entry.count));
     }
 
     public static void displayShoppingList(Couple<InventorySummary> bakedList) {
@@ -141,12 +134,12 @@ public class BlueprintOverlayRenderer2 {
 
         for (BigItemStack entry : bakedList.getSecond()
                 .getStacksByCount()) {
-            ingredients.add(Pair.of(entry.stack.copyWithCount(entry.count), canAfford(mc.player, entry)));
+            ingredients.add(Pair.of(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(entry.stack, entry.count), canAfford(mc.player, entry)));
         }
 
         for (BigItemStack entry : bakedList.getFirst()
                 .getStacksByCount())
-            results.add(entry.stack.copyWithCount(entry.count));
+            results.add(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(entry.stack, entry.count));
     }
 
     private static boolean canAfford(Player player, BigItemStack entry) {
@@ -170,119 +163,6 @@ public class BlueprintOverlayRenderer2 {
         shopContext = null;
     }
 
-    public static void renderOverlay(ForgeGui gui, GuiGraphics graphics, float partialTicks, int width, int height) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.options.hideGui || mc.screen != null)
-            return;
-
-        if (!active || empty)
-            return;
-
-        boolean invalidShop = shopContext != null && (ingredients.isEmpty() || ingredients.get(0)
-                .getFirst()
-                .isEmpty() || shopContext.stockLevel() == 0);
-
-        int w = 21 * ingredients.size();
-
-        if (!noOutput) {
-            w += 21 * results.size();
-            w += 30;
-        }
-
-        int x = (width - w) / 2;
-        int y = (int) (height - 100);
-
-        if (shopContext != null) {
-            TooltipRenderUtil.renderTooltipBackground(graphics, x - 2, y + 1, w + 4, 19, 0, 0x55_000000, 0x55_000000, 0,
-                    0);
-
-            ExtraGuiTextures.TRADE_OVERLAY.render(graphics, width / 2 - 48, y - 19);
-            if (shopContext.purchases() > 0) {
-                graphics.renderItem(ExtraItems.SHOPPING_LIST.asStack(), width / 2 + 20, y - 20);
-                graphics.drawString(mc.font, Component.literal("x" + shopContext.purchases()), width / 2 + 20 + 16,
-                        y - 20 + 4, 0xff_eeeeee, true);
-            }
-        }
-
-        // Ingredients
-        for (Pair<ItemStack, Boolean> pair : ingredients) {
-            RenderSystem.enableBlend();
-            (pair.getSecond() ? AllGuiTextures.HOTSLOT_ACTIVE : AllGuiTextures.HOTSLOT).render(graphics, x, y);
-            ItemStack itemStack = pair.getFirst();
-            String count = shopContext != null && !shopContext.checkout() || pair.getSecond() ? null
-                    : ChatFormatting.GOLD.toString() + itemStack.getCount();
-            drawItemStack(graphics, mc, x, y, itemStack, count);
-            x += 21;
-        }
-
-        if (noOutput)
-            return;
-
-        // Arrow
-        x += 5;
-        RenderSystem.enableBlend();
-        if (invalidShop)
-            ExtraGuiTextures.HOTSLOT_ARROW_BAD.render(graphics, x, y + 4);
-        else
-            AllGuiTextures.HOTSLOT_ARROW.render(graphics, x, y + 4);
-        x += 25;
-
-        // Outputs
-        if (results.isEmpty()) {
-            AllGuiTextures.HOTSLOT.render(graphics, x, y);
-            GuiGameElement.of(Items.BARRIER)
-                    .at(x + 3, y + 3)
-                    .render(graphics);
-        } else {
-            for (ItemStack result : results) {
-                AllGuiTextures slot = resultCraftable ? AllGuiTextures.HOTSLOT_SUPER_ACTIVE : AllGuiTextures.HOTSLOT;
-                if (!invalidShop && shopContext != null && shopContext.stockLevel() > shopContext.purchases())
-                    slot = AllGuiTextures.HOTSLOT_ACTIVE;
-                slot.render(graphics, resultCraftable ? x - 1 : x, resultCraftable ? y - 1 : y);
-                drawItemStack(graphics, mc, x, y, result, null);
-                x += 21;
-            }
-        }
-
-        if (shopContext != null && !shopContext.checkout()) {
-            int cycle = 0;
-            for (boolean count : Iterate.trueAndFalse)
-                for (int i = 0; i < results.size(); i++) {
-                    ItemStack result = results.get(i);
-                    List<Component> tooltipLines = result.getTooltipLines(mc.player, TooltipFlag.NORMAL);
-                    if (tooltipLines.size() <= 1)
-                        continue;
-                    if (count) {
-                        cycle++;
-                        continue;
-                    }
-                    if ((gui.getGuiTicks() / 40) % cycle != i)
-                        continue;
-                    graphics.renderComponentTooltip(gui.getFont(), tooltipLines, mc.getWindow()
-                                    .getGuiScaledWidth(),
-                            mc.getWindow()
-                                    .getGuiScaledHeight());
-                }
-        }
-
-        RenderSystem.disableBlend();
-    }
-
-    public static void drawItemStack(GuiGraphics graphics, Minecraft mc, int x, int y, ItemStack itemStack,
-                                     String count) {
-        if (itemStack.getItem() instanceof FilterItem) {
-            int step = AnimationTickHolder.getTicks(mc.level) / 10;
-            ItemStack[] itemsMatchingFilter = getItemsMatchingFilter(itemStack);
-            if (itemsMatchingFilter.length > 0)
-                itemStack = itemsMatchingFilter[step % itemsMatchingFilter.length];
-        }
-
-        GuiGameElement.of(itemStack)
-                .at(x + 3, y + 3)
-                .render(graphics);
-        graphics.renderItemDecorations(mc.font, itemStack, x + 3, y + 3, count);
-    }
-
     private static ItemStack[] getItemsMatchingFilter(ItemStack filter) {
         return cachedRenderedFilters.computeIfAbsent(filter, itemStack -> {
             CompoundTag tag = itemStack.getOrCreateTag();
@@ -298,7 +178,7 @@ public class BlueprintOverlayRenderer2 {
 //                if (whitelistMode == AttributeFilterMenu.WhitelistMode.WHITELIST_DISJ && attributes.size() == 1) {
 //                    ItemAttribute fromNBT = ItemAttribute.fromNBT((CompoundTag) attributes.get(0));
 //                    if (fromNBT instanceof InTagAttribute inTag) {
-//                        ITagManager<Item> tagManager = ForgeRegistries.ITEMS.tags();
+//                        ITagManager<Item> tagManager = ForgeRegistry.ITEM_REGISTRY.tags();
 //                        if (tagManager.isKnownTagName(inTag.tag)) {
 //                            ITag<Item> taggedItems = tagManager.getTag(inTag.tag);
 //                            if (!taggedItems.isEmpty()) {

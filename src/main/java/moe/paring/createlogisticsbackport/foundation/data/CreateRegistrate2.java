@@ -3,7 +3,6 @@ package moe.paring.createlogisticsbackport.foundation.data;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.foundation.utility.RegisteredObjects;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import moe.paring.createlogisticsbackport.foundation.block.connected.CTModel2;
 import moe.paring.createlogisticsbackport.foundation.block.connected.ConnectedTextureBehaviour2;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,8 +23,6 @@ public class CreateRegistrate2 {
 
     @OnlyIn(Dist.CLIENT)
     private static void registerCTBehviour(Block entry, Supplier<ConnectedTextureBehaviour2> behaviorSupplier) {
-        ConnectedTextureBehaviour2 behavior = behaviorSupplier.get();
-        CreateClient.MODEL_SWAPPER.getCustomBlockModels()
-                .register(RegisteredObjects.getKeyOrThrow(entry), model -> new CTModel2(model, behavior));
+        // CTModel2 (ModelData-based) disabled during 1.18.2 port
     }
 }

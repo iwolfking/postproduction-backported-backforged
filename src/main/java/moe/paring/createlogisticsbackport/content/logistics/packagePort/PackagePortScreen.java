@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.content.logistics.packagePort;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.simibubi.create.AllPackets;
@@ -15,8 +16,8 @@ import moe.paring.createlogisticsbackport.polyfill.NewIconButton;
 import moe.paring.createlogisticsbackport.registry.ExtraGuiTextures;
 import moe.paring.createlogisticsbackport.registry.ExtraIcons;
 import moe.paring.createlogisticsbackport.registry.ExtraPackets;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -62,12 +63,12 @@ public class PackagePortScreen extends AbstractSimiContainerScreen<PackagePortMe
         Consumer<String> onTextChanged;
         onTextChanged = s -> addressBox.setX(nameBoxX(s, addressBox));
         addressBox = new EditBox(new NoShadowFontWrapper(font), x + 23, y - 11, background.getWidth() - 20, 10,
-                Component.empty());
+                new TextComponent(""));
         addressBox.setBordered(false);
         addressBox.setMaxLength(25);
         addressBox.setTextColor(0x3D3C48);
         addressBox.setValue(menu.contentHolder.addressFilter);
-        addressBox.setFocused(false);
+        moe.paring.createlogisticsbackport.DrawHelper.setFocused(addressBox, false);
         addressBox.mouseClicked(0, 0, 0);
         addressBox.setResponder(onTextChanged);
         addressBox.setX(nameBoxX(addressBox.getValue(), addressBox));
@@ -113,7 +114,7 @@ public class PackagePortScreen extends AbstractSimiContainerScreen<PackagePortMe
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float pPartialTick, int pMouseX, int pMouseY) {
+    protected void renderBg(PoseStack graphics, float pPartialTick, int pMouseX, int pMouseY) {
         int x = getGuiLeft();
         int y = getGuiTop();
 
@@ -127,7 +128,7 @@ public class PackagePortScreen extends AbstractSimiContainerScreen<PackagePortMe
                     .isEmpty()) {
                 text = icon.getHoverName()
                         .getString();
-                graphics.drawString(font, text, nameBoxX(text, addressBox), y - 11, 0x3D3C48, false);
+                moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, text, nameBoxX(text, addressBox), y - 11, 0x3D3C48, false);
             }
             ExtraGuiTextures.FROGPORT_EDIT_NAME.render(graphics, nameBoxX(text, addressBox) + font.width(text) + 5,
                     y - 14);
@@ -148,10 +149,10 @@ public class PackagePortScreen extends AbstractSimiContainerScreen<PackagePortMe
         x += 13;
         y += 58;
         ExtraGuiTextures.FROGPORT_SLOT.render(graphics, x, y);
-        graphics.renderItem(menu.contentHolder.target.getIcon(), x + 1, y + 1);
+        minecraft.getItemRenderer().renderAndDecorateItem(menu.contentHolder.target.getIcon(), x + 1, y + 1);
 
-        if (addressBox.isHovered()) {
-            graphics.renderComponentTooltip(font, List.of(Lang.translate("gui.package_port.catch_packages")
+        if (addressBox.isHoveredOrFocused()) {
+            this.renderComponentTooltip(graphics, List.of(Lang.translate("gui.package_port.catch_packages")
                                     .color(AbstractSimiWidget.HEADER_RGB)
                                     .component(),
                             Lang.translate("gui.package_port.catch_packages_empty")
@@ -170,7 +171,7 @@ public class PackagePortScreen extends AbstractSimiContainerScreen<PackagePortMe
                 && (pKeyCode == InputConstants.KEY_RETURN || pKeyCode == InputConstants.KEY_NUMPADENTER);
 
         if (hitEnter && addressBox.isFocused()) {
-            addressBox.setFocused(false);
+            moe.paring.createlogisticsbackport.DrawHelper.setFocused(addressBox, false);
             return true;
         }
 

@@ -62,10 +62,10 @@ public class FactoryPanelSetItemMenu extends GhostItemMenu<FactoryPanelBehaviour
 	protected void saveData(FactoryPanelBehaviour contentHolder) {
 		if (!contentHolder.setFilter(ghostInventory.getStackInSlot(0))) {
 			player.displayClientMessage(Lang.translateDirect("logistics.filter.invalid_item"), true);
-			AllSoundEvents.DENY.playOnServer(player.level(), player.blockPosition(), 1, 1);
+			AllSoundEvents.DENY.playOnServer(player.level, player.blockPosition(), 1, 1);
 			return;
 		}
-		player.level()
+		player.level
 			.playSound(null, contentHolder.getPos(), SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, .25f, .1f);
 	}
 

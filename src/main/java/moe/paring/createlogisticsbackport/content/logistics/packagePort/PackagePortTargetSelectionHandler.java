@@ -123,7 +123,7 @@ public class PackagePortTargetSelectionHandler {
 
 		BlockPos pos = blockRayTraceResult.getBlockPos();
 		if (!mc.level.getBlockState(pos)
-			.canBeReplaced())
+			.getBlock().canBeReplaced(mc.level.getBlockState(pos), net.minecraft.world.level.material.Fluids.EMPTY))
 			pos = pos.relative(blockRayTraceResult.getDirection());
 
 		String validateDiff = validateDiff(target, pos);
@@ -141,7 +141,7 @@ public class PackagePortTargetSelectionHandler {
 			.disableLineNormals();
 
 		if (!mc.level.getBlockState(pos)
-			.canBeReplaced())
+			.getBlock().canBeReplaced(mc.level.getBlockState(pos), net.minecraft.world.level.material.Fluids.EMPTY))
 			return;
 
 		CreateClient.OUTLINER.chaseAABB("TargetedFrogPos", new AABB(pos).contract(0, 1, 0)

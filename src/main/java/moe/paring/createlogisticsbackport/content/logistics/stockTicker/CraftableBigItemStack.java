@@ -22,7 +22,7 @@ public class CraftableBigItemStack extends BigItemStack {
 	}
 
 	public int getOutputCount(Level level) {
-		return recipe.getResultItem(level.registryAccess())
+		return recipe.getResultItem()
 			.getCount();
 	}
 

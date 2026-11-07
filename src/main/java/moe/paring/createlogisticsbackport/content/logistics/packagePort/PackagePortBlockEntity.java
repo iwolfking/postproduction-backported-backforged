@@ -165,7 +165,7 @@ public abstract class PackagePortBlockEntity extends SmartBlockEntity implements
 			return InteractionResult.SUCCESS;
 		}
 
-		NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+		NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
 		return InteractionResult.SUCCESS;
 	}
 
@@ -201,7 +201,7 @@ public abstract class PackagePortBlockEntity extends SmartBlockEntity implements
 			list.add(page);
 		}
 
-		page.add(new ClipboardEntry(false, Component.literal("#" + addressFilter)));
+		page.add(new ClipboardEntry(false, new net.minecraft.network.chat.TextComponent("#" + addressFilter)));
 		player.displayClientMessage(Lang.translate("clipboard.address_added", addressFilter)
 			.component(), true);
 
@@ -212,7 +212,7 @@ public abstract class PackagePortBlockEntity extends SmartBlockEntity implements
 
 	@Override
 	public Component getDisplayName() {
-		return Component.empty();
+		return net.minecraft.network.chat.TextComponent.EMPTY;
 	}
 
 	@Override

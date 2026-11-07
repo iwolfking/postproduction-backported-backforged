@@ -19,8 +19,8 @@ public class PackageClientInteractionHandler {
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void onPlayerPunchPackage(AttackEntityEvent event) {
-		Player attacker = event.getEntity();
-		if (!attacker.level()
+		Player attacker = (Player) event.getEntity();
+		if (!attacker.level
 			.isClientSide())
 			return;
 		Minecraft mc = Minecraft.getInstance();

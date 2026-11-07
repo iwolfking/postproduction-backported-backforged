@@ -8,8 +8,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
@@ -25,23 +25,23 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
-    public static void onServerWorldTick(TickEvent.LevelTickEvent event) {
+    public static void onServerWorldTick(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.START) return;
-        if (event.side == LogicalSide.CLIENT) return;
+        if (event.world.isClientSide()) return;
 
-        CreateLogisticsBackport.LOGISTICS.tick(event.level);
+        CreateLogisticsBackport.LOGISTICS.tick(event.world);
     }
 
     @SubscribeEvent
-    public void onLoadWorld(LevelEvent.Load event) {
-        CreateLogisticsBackport.LOGISTICS.levelLoaded(event.getLevel());
+    public void onLoadWorld(WorldEvent.Load event) {
+        CreateLogisticsBackport.LOGISTICS.levelLoaded(event.getWorld());
     }
 
     @SubscribeEvent
-    public static void onPlayerJoin(EntityJoinLevelEvent event) {
+    public static void onPlayerJoin(EntityJoinWorldEvent event) {
         if (!ExtraConfigs.server().suppressWarningMessage.get())
-            if (event.getEntity() instanceof Player player && !player.isLocalPlayer()) {
-                player.displayClientMessage(Component.literal("Post Production Backported is installed. Any contents from create 6 may have critical bugs and use at your own risk.").withStyle(ChatFormatting.YELLOW), false);
+            if (event.getEntity() instanceof Player player && !player.level.isClientSide()) {
+                player.displayClientMessage(new net.minecraft.network.chat.TextComponent("Post Production Backported is installed. Any contents from create 6 may have critical bugs and use at your own risk.").withStyle(ChatFormatting.YELLOW), false);
             }
     }
 }

@@ -2,7 +2,7 @@ package moe.paring.createlogisticsbackport.content.logistics.packagePort.postbox
 
 import com.jozufozu.flywheel.util.transform.Transform;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
@@ -25,7 +25,7 @@ public class PostboxRenderer extends SmartBlockEntityRenderer<PostboxBlockEntity
                               MultiBufferSource buffer, int light, int overlay) {
 
         if (blockEntity.addressFilter != null && !blockEntity.addressFilter.isBlank()) {
-            renderNameplateOnHover(blockEntity, Component.literal(blockEntity.addressFilter), 1, ms, buffer, light);
+            renderNameplateOnHover(blockEntity, new net.minecraft.network.chat.TextComponent(blockEntity.addressFilter), 1, ms, buffer, light);
         }
 
         SuperByteBuffer sbb = CachedBufferer.partial(ExtraPartialModels.POSTBOX_FLAG, blockEntity.getBlockState());
@@ -33,7 +33,7 @@ public class PostboxRenderer extends SmartBlockEntityRenderer<PostboxBlockEntity
         sbb.light(light)
                 .overlay(overlay)
                 .centre()
-                .multiply(Axis.YP, (Mth.DEG_TO_RAD * (180 - blockEntity.getBlockState()
+                .multiply(Vector3f.YP, (Mth.DEG_TO_RAD * (180 - blockEntity.getBlockState()
                         .getValue(PostboxBlock.FACING)
                         .toYRot()))).unCentre();
 

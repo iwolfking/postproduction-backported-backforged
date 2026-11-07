@@ -65,8 +65,8 @@ public class ChainConveyorConnectionHandler {
 	public static void onItemUsedOnBlock(PlayerInteractEvent.RightClickBlock event) {
 		ItemStack itemStack = event.getItemStack();
 		BlockPos pos = event.getPos();
-		Level level = event.getLevel();
-		Player player = event.getEntity();
+		Level level = event.getWorld();
+		Player player = (Player) event.getEntity();
 		BlockState blockState = level.getBlockState(pos);
 
 		if (!ExtraBlocks.CHAIN_CONVEYOR.has(blockState))
@@ -120,10 +120,10 @@ public class ChainConveyorConnectionHandler {
 			return;
 
 		LocalPlayer player = Minecraft.getInstance().player;
-		BlockEntity sourceLift = player.level()
+		BlockEntity sourceLift = player.level
 			.getBlockEntity(firstPos);
 
-		if (firstDim != player.level()
+		if (firstDim != player.level
 			.dimension() || !(sourceLift instanceof ChainConveyorBlockEntity)) {
 			firstPos = null;
 			Lang.translate("chain_conveyor.selection_cleared")
@@ -145,7 +145,7 @@ public class ChainConveyorConnectionHandler {
 			return;
 		}
 
-		Level level = player.level();
+		Level level = player.level;
 		BlockHitResult bhr = (BlockHitResult) hitResult;
 		BlockPos pos = bhr.getBlockPos();
 		BlockState hitState = level.getBlockState(pos);

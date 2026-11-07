@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
-import net.minecraft.util.RandomSource;
+
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class ConnectedTextureBehaviour2 {
 
 	@Nullable
-	public CTSpriteShiftEntry2 getShift(BlockState state, RandomSource rand, Direction direction,
+	public CTSpriteShiftEntry2 getShift(BlockState state, java.util.Random rand, Direction direction,
                                        @NotNull TextureAtlasSprite sprite) {
 		return getShift(state, direction, sprite);
 	}
@@ -77,7 +77,7 @@ public abstract class ConnectedTextureBehaviour2 {
 	public BlockState getCTBlockState(BlockAndTintGetter reader, BlockState reference, Direction face, BlockPos fromPos,
 		BlockPos toPos) {
 		BlockState blockState = reader.getBlockState(toPos);
-		return blockState.getAppearance(reader, toPos, face, reference, fromPos);
+		return blockState;
 	}
 
 	protected boolean reverseUVs(BlockState state, Direction face) {

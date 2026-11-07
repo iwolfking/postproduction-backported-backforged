@@ -36,7 +36,7 @@ public class ChainConveyorRidingHandler {
 		if (mc.level.getBlockEntity(ridingChainConveyor) instanceof ChainConveyorBlockEntity clbe)
 			flipped = clbe.getSpeed() < 0;
 
-		Component component = Component.translatable("mount.onboard", mc.options.keyShift.getTranslatedKeyMessage());
+		Component component = new net.minecraft.network.chat.TranslatableComponent("mount.onboard", mc.options.keyShift.getTranslatedKeyMessage());
 		mc.gui.setOverlayMessage(component, false);
 		mc.getSoundManager()
 			.play(SimpleSoundInstance.forUI(SoundEvents.CHAIN_HIT, 1f, 0.5f));

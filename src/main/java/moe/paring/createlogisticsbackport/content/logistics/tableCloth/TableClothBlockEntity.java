@@ -73,13 +73,12 @@ public class TableClothBlockEntity extends SmartBlockEntity {
 
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-		behaviours.add(priceTag = new TableClothFilteringBehaviour(this));
-		behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
+		behaviours.add(priceTag = new TableClothFilteringBehaviour(this));        computerBehaviour = null;
 	}
 
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
-		if (computerBehaviour.isPeripheralCap(cap))
+		if (computerBehaviour != null && computerBehaviour.isPeripheralCap(cap))
 			return computerBehaviour.getPeripheralCapability();
 		return super.getCapability(cap, side);
 	}
@@ -137,7 +136,7 @@ public class TableClothBlockEntity extends SmartBlockEntity {
 			player.setItemInHand(InteractionHand.MAIN_HAND, manuallyAddedItems.remove(manuallyAddedItems.size() - 1));
 			level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 0.5f, 1f);
 
-			if (manuallyAddedItems.isEmpty() && !computerBehaviour.hasAttachedComputer()) {
+			if (manuallyAddedItems.isEmpty() && (computerBehaviour == null || !computerBehaviour.hasAttachedComputer())) {
 				level.setBlock(worldPosition, getBlockState().setValue(TableClothBlock.HAS_BE, false), 3);
 				AllPackets.getChannel()
 					.send(packetTarget(), new RemoveBlockEntityPacket(worldPosition));
@@ -151,7 +150,7 @@ public class TableClothBlockEntity extends SmartBlockEntity {
 			return InteractionResult.SUCCESS;
 
 		level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.5f, 1f);
-		manuallyAddedItems.add(heldItem.copyWithCount(1));
+		manuallyAddedItems.add(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(heldItem, 1));
 		facing = player.getDirection()
 			.getOpposite();
 		heldItem.shrink(1);

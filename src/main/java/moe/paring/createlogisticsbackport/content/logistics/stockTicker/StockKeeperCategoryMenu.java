@@ -74,7 +74,7 @@ public class StockKeeperCategoryMenu extends MenuBase<StockTickerBlockEntity> {
 	@Override
 	public boolean stillValid(Player player) {
 		return !contentHolder.isRemoved() && player.position()
-			.closerThan(Vec3.atCenterOf(contentHolder.getBlockPos()), player.getBlockReach() + 4);
+			.closerThan(Vec3.atCenterOf(contentHolder.getBlockPos()), 9);
 	}
 
 	class InactiveSlot extends Slot {

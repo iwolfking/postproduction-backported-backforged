@@ -1,14 +1,14 @@
 package moe.paring.createlogisticsbackport.compat.computercraft.peripherals;
 
 import com.simibubi.create.compat.computercraft.implementation.peripherals.SyncedPeripheral;
-import dan200.computercraft.api.detail.VanillaDetailRegistries;
+import dan200.computercraft.api.detail.DetailRegistries;
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import moe.paring.createlogisticsbackport.content.logistics.BigItemStack;
 import moe.paring.createlogisticsbackport.content.logistics.stockTicker.PackageOrderWithCrafts;
 import moe.paring.createlogisticsbackport.content.logistics.tableCloth.TableClothBlockEntity;
-import net.minecraft.core.registries.BuiltInRegistries;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -46,7 +46,7 @@ public class TableClothShopPeripheral extends SyncedPeripheral<TableClothBlockEn
 	@LuaFunction(mainThread = true)
 	public final Map<String, ?> getPriceTagItem() throws LuaException {
 		assertShop();
-		return VanillaDetailRegistries.ITEM_STACK.getDetails(blockEntity.priceTag.getFilter());
+		return DetailRegistries.ITEM_STACK.getDetails(blockEntity.priceTag.getFilter());
 	}
 
 	@LuaFunction(mainThread = true)
@@ -55,7 +55,7 @@ public class TableClothShopPeripheral extends SyncedPeripheral<TableClothBlockEn
 		ResourceLocation resourceLocation = ResourceLocation.tryParse("minecraft:air");
 		if (itemName.isPresent())
 			resourceLocation = ResourceLocation.tryParse(itemName.get());
-		ItemLike item = BuiltInRegistries.ITEM.get(resourceLocation);
+		ItemLike item = net.minecraft.core.Registry.ITEM.get(resourceLocation);
 		blockEntity.priceTag.setFilter(new ItemStack(item));
 	}
 
@@ -83,7 +83,7 @@ public class TableClothShopPeripheral extends SyncedPeripheral<TableClothBlockEn
 		for (int i = 0; i < wares.size(); i++) {
 			ItemStack stack = wares.get(i).stack;
 			Map<String, Object> details = new HashMap<>(
-				VanillaDetailRegistries.ITEM_STACK.getDetails(stack));
+				DetailRegistries.ITEM_STACK.getDetails(stack));
 			details.put("count", wares.get(i).count);
 			result.put(i + 1, details); // +1 because lua
 		}
@@ -122,7 +122,7 @@ public class TableClothShopPeripheral extends SyncedPeripheral<TableClothBlockEn
 						throw new LuaException("Count for item " + itemName + " exceeds 256");
 				}
 				ResourceLocation resourceLocation = ResourceLocation.tryParse(itemName);
-				ItemLike item = BuiltInRegistries.ITEM.get(resourceLocation);
+				ItemLike item = net.minecraft.core.Registry.ITEM.get(resourceLocation);
 				ItemStack itemStack = new ItemStack(item);
 				if (itemStack.isEmpty())
 					throw new LuaException("Invalid item at index: " + (i + 1));

@@ -27,9 +27,9 @@ public class ValueSettingsInputHandler2 {
 
 	@SubscribeEvent
 	public static void onBlockActivated(PlayerInteractEvent.RightClickBlock event) {
-		Level world = event.getLevel();
+		Level world = event.getWorld();
 		BlockPos pos = event.getPos();
-		Player player = event.getEntity();
+		Player player = (Player) event.getEntity();
 		InteractionHand hand = event.getHand();
 
 		if (!canInteract(player))

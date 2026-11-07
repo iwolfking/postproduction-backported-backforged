@@ -9,18 +9,15 @@
     "AttributeFilterMenuAccessor",
     "BasinInventoryMixin",
     "BeltBlockMixin",
-    "BeltRendererMixin",
     "BlazeBurnerBlockEntityAccessor",
     "BlazeBurnerBlockEntityMixin",
     "BlazeBurnerBlockMixin",
     "BlazeBurnerRendererMixin",
-    "BlockLootSubProviderAccessor",
     "BrassDiodeBlockEntityAccessor",
     "BrassDiodeBlockEntityMixin",
     "BrassDiodeBlockMixin",
     "ClipboardBlockItemMixin",
     "ClipboardEntryMixin",
-    "ComputerBehaviourMixin",
     "ConnectedInputAccessor",
     "CreateMixin",
     "DepotRendererMixin",
@@ -32,7 +29,6 @@
     "FilterMenuAccessor",
     "FunnelBlockMixin",
     "GlobalStationMixin",
-    "ItemModelGeneratorsAccessor",
     "ItemVaultBlockEntityMixin",
     "MechanicalCrafterBlockEntityAccessor",
     "OutlinerAccessor",
@@ -49,7 +45,6 @@
     "UIRenderHelperAccessor"
   ],
   "client": [
-    "ClipboardScreenMixin",
     "HumanoidModelMixin"
   ],
   "injectors": {

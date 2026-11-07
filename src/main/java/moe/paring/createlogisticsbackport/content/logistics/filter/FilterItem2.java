@@ -82,7 +82,7 @@ public class FilterItem2 extends Item implements MenuProvider, SupportsItemCopyi
         List<Component> makeSummary = makeSummary(stack);
         if (makeSummary.isEmpty())
             return;
-        tooltip.add(CommonComponents.SPACE);
+        tooltip.add(new net.minecraft.network.chat.TextComponent(""));
         tooltip.addAll(makeSummary);
     }
 
@@ -101,7 +101,7 @@ public class FilterItem2 extends Item implements MenuProvider, SupportsItemCopyi
             int count = 0;
             for (int i = 0; i < filterItems.getSlots(); i++) {
                 if (count > 3) {
-                    list.add(Component.literal("- ...")
+                    list.add(new net.minecraft.network.chat.TextComponent("- ...")
                             .withStyle(ChatFormatting.DARK_GRAY));
                     break;
                 }
@@ -109,7 +109,7 @@ public class FilterItem2 extends Item implements MenuProvider, SupportsItemCopyi
                 ItemStack filterStack = filterItems.getStackInSlot(i);
                 if (filterStack.isEmpty())
                     continue;
-                list.add(Component.literal("- ")
+                list.add(new net.minecraft.network.chat.TextComponent("- ")
                         .append(filterStack.getHoverName())
                         .withStyle(ChatFormatting.GRAY));
                 count++;
@@ -138,11 +138,11 @@ public class FilterItem2 extends Item implements MenuProvider, SupportsItemCopyi
                     continue;
                 boolean inverted = compound.getBoolean("Inverted");
                 if (count > 3) {
-                    list.add(Component.literal("- ...")
+                    list.add(new net.minecraft.network.chat.TextComponent("- ...")
                             .withStyle(ChatFormatting.DARK_GRAY));
                     break;
                 }
-                list.add(Component.literal("- ")
+                list.add(new net.minecraft.network.chat.TextComponent("- ")
                         .append(attribute.format(inverted)));
                 count++;
             }
@@ -171,7 +171,7 @@ public class FilterItem2 extends Item implements MenuProvider, SupportsItemCopyi
 
         if (!player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND) {
             if (!world.isClientSide && player instanceof ServerPlayer serverPlayer)
-                NetworkHooks.openScreen(serverPlayer, this, buf -> {
+                NetworkHooks.openGui(serverPlayer, this, buf -> {
                     buf.writeItem(heldItem);
                 });
             return InteractionResultHolder.success(heldItem);
@@ -219,7 +219,7 @@ public class FilterItem2 extends Item implements MenuProvider, SupportsItemCopyi
         if (PackageItem.isPackage(filter) && PackageItem.isPackage(stack))
             return true;
 
-        return ItemHelper.sameItem(filter, stack);
+        return ItemStack.isSame(filter, stack);
     }
 
     public static boolean doPackagesHaveSameData(@NotNull ItemStack a, @NotNull ItemStack b) {

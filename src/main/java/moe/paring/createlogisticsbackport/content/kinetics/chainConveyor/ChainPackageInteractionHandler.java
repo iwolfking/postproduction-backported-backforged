@@ -31,7 +31,7 @@ public class ChainPackageInteractionHandler {
 					.expandTowards(0, 0.5, 0)
 					.inflate(0.45);
 
-				double range = mc.player.getAttribute(ForgeMod.BLOCK_REACH.get())
+				double range = mc.player.getAttribute(ForgeMod.REACH_DISTANCE.get())
 					.getValue() + 1;
 				Vec3 from = RaycastHelper.getTraceOrigin(mc.player);
 				Vec3 to = RaycastHelper.getTraceTarget(mc.player, range, from);

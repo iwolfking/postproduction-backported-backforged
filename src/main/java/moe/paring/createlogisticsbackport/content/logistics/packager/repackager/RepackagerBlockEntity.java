@@ -108,7 +108,7 @@ public class RepackagerBlockEntity extends PackagerBlockEntity {
 		if (completedOrderId == -1)
 			return;
 
-		List<BigItemStack> boxesToExport = repackageHelper.repack(completedOrderId, level.getRandom());
+		List<BigItemStack> boxesToExport = repackageHelper.repack(completedOrderId, level.random);
 
 		for (int slot = 0; slot < targetInv.getSlots(); slot++) {
 			ItemStack extracted = targetInv.extractItem(slot, 1, true);

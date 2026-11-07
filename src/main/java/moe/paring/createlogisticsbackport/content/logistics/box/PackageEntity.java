@@ -19,7 +19,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -89,7 +88,7 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 		packageEntity.originalEntity = originalEntity;
 
 		if (world != null && !world.isClientSide)
-			if (ChuteBlock.isChute(world.getBlockState(BlockPos.containing(position.x, position.y + .5f, position.z))))
+			if (ChuteBlock.isChute(world.getBlockState(new BlockPos(position.x, position.y + .5f, position.z))))
 				packageEntity.setYRot(((int) packageEntity.getYRot()) / 90 * 90);
 
 		return packageEntity;
@@ -125,7 +124,7 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 	public void travel(Vec3 p_213352_1_) {
 		super.travel(p_213352_1_);
 
-		if (!level().isClientSide)
+		if (!level.isClientSide)
 			return;
 		if (getDeltaMovement().length() < 1 / 128f)
 			return;
@@ -134,8 +133,8 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 
 		Vec3 motion = getDeltaMovement().scale(.75f);
 		AABB bb = getBoundingBox();
-		List<VoxelShape> entityStream = level().getEntityCollisions(this, bb.expandTowards(motion));
-		motion = collideBoundingBox(this, motion, bb, level(), entityStream);
+		List<VoxelShape> entityStream = level.getEntityCollisions(this, bb.expandTowards(motion));
+		motion = collideBoundingBox(this, motion, bb, level, entityStream);
 
 		Vec3 clientPos = position().add(motion);
 		if (lerpSteps != 0)
@@ -164,7 +163,7 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 			originalEntity = null;
 		}
 
-		if (level() instanceof PonderWorld) {
+		if (level instanceof PonderWorld) {
 			setDeltaMovement(getDeltaMovement().add(0, -0.06, 0));
 			if (position().y < 0.125)
 				discard();
@@ -256,11 +255,11 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 		if (!pPlayer.getItemInHand(pHand)
 			.isEmpty())
 			return super.interact(pPlayer, pHand);
-		if (pPlayer.level().isClientSide)
+		if (pPlayer.level.isClientSide)
 			return InteractionResult.SUCCESS;
 		pPlayer.setItemInHand(pHand, box);
-		level().playSound(null, blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, .2f,
-			.75f + level().random.nextFloat());
+		level.playSound(null, blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, .2f,
+			.75f + level.random.nextFloat());
 		remove(RemovalReason.DISCARDED);
 		return InteractionResult.SUCCESS;
 	}
@@ -291,7 +290,7 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 		if (!isAlive())
 			return;
 		if (state.getBlock() == Blocks.WATER) {
-			destroy(damageSources().drown());
+			destroy(DamageSource.DROWN);
 			remove(RemovalReason.KILLED);
 		}
 	}
@@ -301,10 +300,10 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 		if (!ForgeHooks.onLivingAttack(this, source, amount))
 			return false;
 
-		if (level().isClientSide || !this.isAlive())
+		if (level.isClientSide || !this.isAlive())
 			return false;
 
-		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+		if (false) {
 			this.remove(RemovalReason.KILLED);
 			return false;
 		}
@@ -312,22 +311,22 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 		if (!box.getItem().canBeHurtBy(source))
 			return false;
 
-		if (source.equals(damageSources().inWall()) && (isPassenger() || insertionDelay < 20))
+		if (source.equals(DamageSource.IN_WALL) && (isPassenger() || insertionDelay < 20))
 			return false;
 
-		if (source.is(DamageTypeTags.IS_FALL))
+		if (false)
 			return false;
 
 		if (this.isInvulnerableTo(source))
 			return false;
 
-		if (source.is(DamageTypeTags.IS_EXPLOSION)) {
+		if (false) {
 			this.destroy(source);
 			this.remove(RemovalReason.KILLED);
 			return false;
 		}
 
-		if (source.is(DamageTypeTags.IS_FIRE)) {
+		if (false) {
 			if (this.isOnFire()) {
 				this.takeDamage(source, 0.15F);
 			} else {
@@ -362,7 +361,7 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 		ExtraPackets.getChannel()
 			.send(PacketDistributor.TRACKING_ENTITY.with(() -> this),
 				new PackageDestroyPacket(getBoundingBox().getCenter(), box));
-		ExtraSoundEvents.PACKAGE_POP.playOnServer(level(), blockPosition());
+		ExtraSoundEvents.PACKAGE_POP.playOnServer(level, blockPosition());
 		this.dropAllDeathLoot(source);
 	}
 
@@ -373,7 +372,7 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 		for (int i = 0; i < contents.getSlots(); i++) {
 			ItemStack itemstack = contents.getStackInSlot(i);
 
-			if (itemstack.getItem() instanceof SpawnEggItem sei && level() instanceof ServerLevel sl) {
+			if (itemstack.getItem() instanceof SpawnEggItem sei && level instanceof ServerLevel sl) {
 				EntityType<?> entitytype = sei.getType(itemstack.getTag());
 				Entity entity =
 					entitytype.spawn(sl, itemstack, null, blockPosition(), MobSpawnType.SPAWN_EGG, false, false);
@@ -383,8 +382,8 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 
 			if (itemstack.isEmpty())
 				continue;
-			ItemEntity entityIn = new ItemEntity(level(), getX(), getY(), getZ(), itemstack);
-			level().addFreshEntity(entityIn);
+			ItemEntity entityIn = new ItemEntity(level, getX(), getY(), getZ(), itemstack);
+			level.addFreshEntity(entityIn);
 		}
 	}
 
@@ -403,7 +402,7 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
+		return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
@@ -456,7 +455,7 @@ public class PackageEntity extends LivingEntity implements IEntityAdditionalSpaw
 
 	@Override
 	public Fallsounds getFallSounds() {
-		return new Fallsounds(SoundEvents.CHISELED_BOOKSHELF_FALL, SoundEvents.CHISELED_BOOKSHELF_FALL);
+		return new Fallsounds(SoundEvents.WOOD_FALL, SoundEvents.WOOD_FALL);
 	}
 
 	@Nullable

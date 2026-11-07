@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.polyfill.behaviour.filtering;
 
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBehaviour;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllSoundEvents;
@@ -165,7 +166,7 @@ public class FilteringBehaviour2 extends BlockEntityBehaviour implements ValueSe
     }
 
     @Override
-    public void setValueSettings(Player player, ValueSettings2 settings, boolean ctrlDown) {
+    public void setValueSettings(Player player, ValueSettingsBehaviour2.ValueSettings2 settings, boolean ctrlDown) {
         if (getValueSettings().equals(settings))
             return;
         count = Mth.clamp(settings.value(), 1, filter.item()
@@ -177,8 +178,8 @@ public class FilteringBehaviour2 extends BlockEntityBehaviour implements ValueSe
     }
 
     @Override
-    public ValueSettings2 getValueSettings() {
-        return new ValueSettings2(upTo ? 0 : 1, count == 0 ? filter.item()
+    public ValueSettingsBehaviour2.ValueSettings2 getValueSettings() {
+        return new ValueSettingsBehaviour2.ValueSettings2(upTo ? 0 : 1, count == 0 ? filter.item()
                 .getMaxStackSize() : count);
     }
 
@@ -266,7 +267,7 @@ public class FilteringBehaviour2 extends BlockEntityBehaviour implements ValueSe
                 new ValueSettingsFormatter2(this::formatValue));
     }
 
-    public MutableComponent formatValue(ValueSettings2 value) {
+    public MutableComponent formatValue(ValueSettingsBehaviour2.ValueSettings2 value) {
         if (value.row() == 0 && value.value() == filter.item()
                 .getMaxStackSize())
             return Lang.translateDirect("logistics.filter.any_amount_short");
@@ -303,7 +304,7 @@ public class FilteringBehaviour2 extends BlockEntityBehaviour implements ValueSe
 
         if (!setFilter(side, toApply)) {
             player.displayClientMessage(Lang.translateDirect("logistics.filter.invalid_item"), true);
-            AllSoundEvents.DENY.playOnServer(player.level(), player.blockPosition(), 1, 1);
+            AllSoundEvents.DENY.playOnServer(player.level, player.blockPosition(), 1, 1);
             return;
         }
 
@@ -395,7 +396,7 @@ public class FilteringBehaviour2 extends BlockEntityBehaviour implements ValueSe
                             .withStyle(ChatFormatting.WHITE))
                     .style(ChatFormatting.RED)
                     .component(), true);
-            AllSoundEvents.DENY.playOnServer(player.level(), player.blockPosition(), 1, 1);
+            AllSoundEvents.DENY.playOnServer(player.level, player.blockPosition(), 1, 1);
             return false;
         }
 

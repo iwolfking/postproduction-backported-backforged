@@ -58,19 +58,19 @@
 			"name": "plunger",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [0, 1]
+			"parts": [0, 1]
 		},
 		{
 			"name": "base",
 			"origin": [3, 0, 3],
 			"color": 0,
-			"children": [2]
+			"parts": [2]
 		},
 		{
 			"name": "bell",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [3]
+			"parts": [3]
 		}
 	]
 }

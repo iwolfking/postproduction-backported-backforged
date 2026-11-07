@@ -70,7 +70,7 @@ public enum ExtraPackets {
             PLAY_TO_CLIENT),
     ;
 
-    public static final ResourceLocation CHANNEL_NAME = ResourceLocation.fromNamespaceAndPath(CreateLogisticsBackport.MODID, "main");
+    public static final ResourceLocation CHANNEL_NAME = new ResourceLocation(CreateLogisticsBackport.MODID, "main");
     public static final int NETWORK_VERSION = 1;
     public static final String NETWORK_VERSION_STR = String.valueOf(NETWORK_VERSION);
     private static SimpleChannel channel;
@@ -129,7 +129,7 @@ public enum ExtraPackets {
             getChannel().messageBuilder(type, index++, direction)
                     .encoder(encoder)
                     .decoder(decoder)
-                    .consumerNetworkThread(handler)
+                    .consumer(handler)
                     .add();
         }
     }

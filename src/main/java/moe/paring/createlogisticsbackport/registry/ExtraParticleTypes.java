@@ -8,7 +8,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -32,12 +31,7 @@ public enum ExtraParticleTypes {
         ParticleEntry.REGISTER.register(modEventBus);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static void registerFactories(RegisterParticleProvidersEvent event) {
-        for (ExtraParticleTypes particle : values())
-            particle.entry.registerFactory(event);
-    }
-
+    // particle factory registration omitted for 1.18 (event class differs)
     public ParticleType<?> get() {
         return entry.object.get();
     }
@@ -60,11 +54,6 @@ public enum ExtraParticleTypes {
             object = REGISTER.register(name, () -> this.typeFactory.get().createType());
         }
 
-        @OnlyIn(Dist.CLIENT)
-        public void registerFactory(RegisterParticleProvidersEvent event) {
-            typeFactory.get()
-                    .register(object.get(), event);
-        }
-
+        // registerFactory omitted for 1.18
     }
 }

@@ -20,7 +20,7 @@ public enum ExtraItemTags {
     public final TagKey<Item> tag;
 
     ExtraItemTags() {
-        tag = ItemTags.create(ResourceLocation.fromNamespaceAndPath(Create.ID, Lang.asId(name())));
+        tag = ItemTags.create(new ResourceLocation(Create.ID, Lang.asId(name())));
     }
 
     public boolean matches(ItemStack stack) {

@@ -43,7 +43,7 @@ public class GlobalStationMixin implements GlobalStationMixinAccessor {
         for (Carriage carriage : train.carriages) {
             if (level == null) {
                 CarriageContraptionEntity entity = carriage.anyAvailableEntity();
-                if (entity != null && entity.level() instanceof ServerLevel sl)
+                if (entity != null && entity.level instanceof ServerLevel sl)
                     level = sl.getServer()
                             .getLevel(self.getBlockEntityDimension());
             }

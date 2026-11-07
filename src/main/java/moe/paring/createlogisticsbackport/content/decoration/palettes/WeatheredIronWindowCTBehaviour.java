@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.levelgen.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ public class WeatheredIronWindowCTBehaviour extends ConnectedTextureBehaviour2.B
     }
 
     @Override
-    public @Nullable CTSpriteShiftEntry2 getShift(BlockState state, RandomSource rand, Direction direction,
+    public @Nullable CTSpriteShiftEntry2 getShift(BlockState state, java.util.Random rand, Direction direction,
                                                  @NotNull TextureAtlasSprite sprite) {
         if (direction.getAxis() == Axis.Y || sprite == null)
             return null;

@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.content.logistics.packagePort.frogport;
 
+import net.minecraftforge.items.CapabilityItemHandler;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
@@ -34,7 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -76,14 +77,13 @@ public class FrogportBlockEntity extends PackagePortBlockEntity implements IHave
 
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
-		if (computerBehaviour.isPeripheralCap(cap))
+		if (computerBehaviour != null && computerBehaviour.isPeripheralCap(cap))
 			return computerBehaviour.getPeripheralCapability();
 		return super.getCapability(cap, side);
 	}
 
 	@Override
-	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-		behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
+	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {        computerBehaviour = null;
 		super.addBehaviours(behaviours);
 	}
 
@@ -95,7 +95,7 @@ public class FrogportBlockEntity extends PackagePortBlockEntity implements IHave
 	public AABB getRenderBoundingBox() {
 		AABB bb = super.getRenderBoundingBox().expandTowards(0, 1, 0);
 		if (target != null)
-			bb = bb.minmax(new AABB(BlockPos.containing(target.getExactTargetLocation(this, level, worldPosition))))
+			bb = bb.minmax(new AABB(new BlockPos(target.getExactTargetLocation(this, level, worldPosition))))
 				.inflate(0.5);
 		return bb;
 	}
@@ -303,7 +303,7 @@ public class FrogportBlockEntity extends PackagePortBlockEntity implements IHave
 		BlockEntity blockEntity = level.getBlockEntity(worldPosition.relative(side));
 		if (blockEntity == null || blockEntity instanceof FrogportBlockEntity)
 			return null;
-		return blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite())
+		return blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())
 			.orElse(null);
 	}
 
@@ -385,7 +385,7 @@ public class FrogportBlockEntity extends PackagePortBlockEntity implements IHave
 	@Override
 	public void invalidateCaps() {
 		super.invalidate();
-		computerBehaviour.removePeripheral();
+		if (computerBehaviour != null) computerBehaviour.removePeripheral();
 	}
 
 }

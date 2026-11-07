@@ -16,7 +16,6 @@ public class SavedDataUtil {
         if (savedData.isDirty()) {
             CompoundTag compoundtag = new CompoundTag();
             compoundtag.put("data", savedData.save(new CompoundTag()));
-            NbtUtils.addCurrentDataVersion(compoundtag);
 
             String savedDataName = file.getName().split("\\.")[0];
 

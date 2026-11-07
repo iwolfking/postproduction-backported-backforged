@@ -1,20 +1,25 @@
 buildscript {
     repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url = 'https://maven.minecraftforge.net/' }
         mavenCentral()
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url = 'https://maven.parchmentmc.org/' }
     }
     dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath files(
+            '/var/home/iwolfking/.gradle/caches/modules-2/files-2.1/org.parchmentmc/librarian/1.2.0.7-dev-SNAPSHOT/b0fd8076cb1216bd1efdbc7b4dd04569f845aa26/librarian-1.2.0.7-dev-SNAPSHOT.jar',
+            '/var/home/iwolfking/.gradle/caches/modules-2/files-2.1/org.parchmentmc.feather/io-gson/0.6.5/55a10836f46a73c896d59fc9f3a4f8d33b610815/io-gson-0.6.5.jar',
+            '/var/home/iwolfking/.gradle/caches/modules-2/files-2.1/org.parchmentmc/feather/0.6.5/38852a16b4adf974081beea0af1e2d2e81b337ab/feather-0.6.5.jar'
+        )
     }
 }
 
-plugins {
-    id 'eclipse'
-    id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
-}
-
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'org.spongepowered.mixin'
 
 group = mod_group_id
@@ -42,7 +47,7 @@ minecraft {
     //
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: mapping_channel, version: mapping_version
+    mappings channel: 'parchment', version: '1.18.1-2022.03.06-1.18.2'
 
     // When true, this property will have all Eclipse/IntelliJ IDEA run configurations run the "prepareX" task for the given run configuration before launching the game.
     // In most cases, it is not necessary to enable.
@@ -52,7 +57,7 @@ minecraft {
     // This property allows configuring Gradle's ProcessResources task(s) to run on IDE output locations before launching the game.
     // It is REQUIRED to be set to true for this template to function.
     // See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
-    copyIdeResources = true
+    // copyIdeResources not supported by FG5
 
     // When true, this property will add the folder name of all declared run configurations to generated IDE run configurations.
     // The folder name can be set on a run configuration using the "folderName" property.
@@ -70,55 +75,8 @@ minecraft {
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
-        // applies to all the run configs below
-        configureEach {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            // The markers can be added/remove as needed separated by commas.
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
-            property 'forge.logging.markers', 'REGISTRIES'
-
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        client {
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', mod_id
-        }
-
-        server {
-            property 'forge.enabledGameTestNamespaces', mod_id
-            args '--nogui'
-        }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
-        gameTestServer {
-            property 'forge.enabledGameTestNamespaces', mod_id
-        }
-
-        data {
-            // example of overriding the workingDirectory set in configureEach above
-            workingDirectory project.file('run-data')
-
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-        }
     }
+
 }
 
 mixin {
@@ -185,32 +143,18 @@ dependencies {
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    implementation fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}")
+    implementation files("/var/home/iwolfking/.gradle/caches/modules-2/files-2.1/org.joml/joml/1.10.5/22566d58af70ad3d72308bab63b8339906deb649/joml-1.10.5.jar")
 
-    implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:slim") { transitive = false }
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
-    implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+    compileOnly files(
+        "/var/home/iwolfking/.gradle/caches/forge_gradle/deobf_dependencies/curse/maven/cc-tweaked-282001/4630521_mapped_parchment_2022.08.07-1.18.2/cc-tweaked-282001-4630521_mapped_parchment_2022.08.07-1.18.2.jar"
+    )
 
-    compileOnly("cc.tweaked:cc-tweaked-${cc_tweaked_minecraft_version}-core-api:${cc_tweaked_version}")
-    compileOnly fg.deobf("cc.tweaked:cc-tweaked-${cc_tweaked_minecraft_version}-forge-api:${cc_tweaked_version}")
-    runtimeOnly fg.deobf("cc.tweaked:cc-tweaked-${cc_tweaked_minecraft_version}-forge:${cc_tweaked_version}")
-
-    implementation fg.deobf("maven.modrinth:jade:${jade_version}")
-
-    compileOnly (fg.deobf("org.valkyrienskies:valkyrienskies-120-forge:${vs2_version}")) {
-        exclude group: 'com.simibubi', module: ''
-        exclude group: 'dev.engine-room', module: ''
-        exclude group: 'com.jozufozu', module: ''
-    }
-    compileOnly (fg.deobf("org.valkyrienskies.core:api:${vscore_version}")) {
-        exclude group: 'org.joml', module: ''
-    }
-    compileOnly (fg.deobf("org.valkyrienskies.core:api-game:${vscore_version}")) {
-        exclude group: 'org.joml', module: ''
-    }
-    compileOnly (fg.deobf("org.valkyrienskies.core:util:${vscore_version}")) {
-        exclude group: 'org.joml', module: ''
-    }
+    implementation files(
+        "/var/home/iwolfking/.gradle/caches/forge_gradle/deobf_dependencies/mezz/jei/jei-1.18.2/9.7.2.281_mapped_parchment_1.18.1-2022.03.06-1.18.2/jei-1.18.2-9.7.2.281_mapped_parchment_1.18.1-2022.03.06-1.18.2.jar",
+        "/var/home/iwolfking/.gradle/caches/forge_gradle/deobf_dependencies/com/simibubi/create/create-1.18.2/0.5.1.i-435_mapped_parchment_1.18.1-2022.03.06-1.18.2/create-1.18.2-0.5.1.i-435_mapped_parchment_1.18.1-2022.03.06-1.18.2-slim.jar",
+        "/var/home/iwolfking/.gradle/caches/forge_gradle/deobf_dependencies/com/jozufozu/flywheel/flywheel-forge-1.18.2/0.6.11-107_mapped_parchment_1.18.1-2022.03.06-1.18.2/flywheel-forge-1.18.2-0.6.11-107_mapped_parchment_1.18.1-2022.03.06-1.18.2.jar",
+        "/var/home/iwolfking/.gradle/caches/forge_gradle/deobf_dependencies/com/tterrag/registrate/Registrate/MC1.18.2-1.1.3_mapped_parchment_1.18.1-2022.03.06-1.18.2/Registrate-MC1.18.2-1.1.3_mapped_parchment_1.18.1-2022.03.06-1.18.2.jar"
+    )
 
 
 //    implementation fg.deobf("maven.modrinth:eureka:9gbnRz82")
@@ -274,4 +218,8 @@ tasks.named('jar', Jar).configure {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-Xmaxerrs' << '10000'
 }

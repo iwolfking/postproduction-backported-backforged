@@ -16,6 +16,6 @@ public class CreateLogisticsBackportClient {
     }
 
     private static void clientInit(final FMLClientSetupEvent event) {
-        ExtraPartialModels.init();
+        // ExtraPartialModels.init(); // now initialized during early client mod construction
     }
 }

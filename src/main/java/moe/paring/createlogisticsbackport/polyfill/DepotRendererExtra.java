@@ -2,7 +2,7 @@ package moe.paring.createlogisticsbackport.polyfill;
 
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.simibubi.create.content.kinetics.belt.BeltHelper;
 import moe.paring.createlogisticsbackport.content.logistics.box.PackageItem;
 import net.minecraft.client.Minecraft;
@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -19,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Random;
 
 public interface DepotRendererExtra {
-    static void renderItem(Level level, PoseStack ms, MultiBufferSource buffer, int light, int overlay,
+    static void renderItem(PoseStack ms, MultiBufferSource buffer, int light, int overlay,
                            ItemStack itemStack, int angle, Random r, Vec3 itemPosition, boolean alwaysUpright) {
         ItemRenderer itemRenderer = Minecraft.getInstance()
                 .getItemRenderer();
@@ -39,7 +39,7 @@ public interface DepotRendererExtra {
                 Vec3 vectorForOffset = itemPosition;
                 Vec3 diff = vectorForOffset.subtract(positionVec);
                 float yRot = (float) (Mth.atan2(diff.x, diff.z) + Math.PI);
-                ms.mulPose(Axis.YP.rotation(yRot));
+                ms.mulPose(Vector3f.YP.rotation(yRot));
             }
             ms.translate(0, 3 / 32d, -1 / 16f);
         }
@@ -62,7 +62,7 @@ public interface DepotRendererExtra {
                 ms.translate(0, -3 / 16f, 0);
                 msr.rotateX(90);
             }
-            itemRenderer.render(itemStack, ItemDisplayContext.FIXED, false, ms, buffer, light, overlay, bakedModel);
+            itemRenderer.render(itemStack, ItemTransforms.TransformType.FIXED, false, ms, buffer, light, overlay, bakedModel);
             ms.popPose();
 
             if (!renderUpright) {

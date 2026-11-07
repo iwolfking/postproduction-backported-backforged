@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.api.packager.unpacking;
 
+import net.minecraftforge.items.CapabilityItemHandler;
 import moe.paring.createlogisticsbackport.content.logistics.stockTicker.PackageOrderWithCrafts;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -7,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +24,7 @@ public enum DefaultUnpackingHandler implements UnpackingHandler {
 		if (targetBE == null)
 			return false;
 
-		IItemHandler targetInv = targetBE.getCapability(ForgeCapabilities.ITEM_HANDLER, side).resolve().orElse(null);
+		IItemHandler targetInv = targetBE.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).resolve().orElse(null);
 		if (targetInv == null)
 			return false;
 

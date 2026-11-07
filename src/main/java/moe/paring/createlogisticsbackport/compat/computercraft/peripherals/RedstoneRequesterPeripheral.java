@@ -1,7 +1,7 @@
 package moe.paring.createlogisticsbackport.compat.computercraft.peripherals;
 
 import com.simibubi.create.compat.computercraft.implementation.peripherals.SyncedPeripheral;
-import dan200.computercraft.api.detail.VanillaDetailRegistries;
+import dan200.computercraft.api.detail.DetailRegistries;
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
@@ -10,7 +10,7 @@ import moe.paring.createlogisticsbackport.content.logistics.redstoneRequester.Re
 import moe.paring.createlogisticsbackport.content.logistics.stockTicker.PackageOrder;
 import moe.paring.createlogisticsbackport.content.logistics.stockTicker.PackageOrderWithCrafts;
 import moe.paring.createlogisticsbackport.content.logistics.stockTicker.PackageOrderWithCrafts.CraftingEntry;
-import net.minecraft.core.registries.BuiltInRegistries;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -48,7 +48,7 @@ public class RedstoneRequesterPeripheral extends SyncedPeripheral<RedstoneReques
 
 		PackageOrder order = new PackageOrder(orderStacks);
 		CraftingEntry orderContext = new CraftingEntry(new PackageOrder(orderStacks.stream()
-				.map(stack -> new BigItemStack(stack.stack.copyWithCount(1)))
+				.map(stack -> new BigItemStack(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(stack.stack, 1)))
 				.toList()), count);
 
 		this.blockEntity.encodedRequest = new PackageOrderWithCrafts(order, List.of(orderContext));
@@ -63,7 +63,7 @@ public class RedstoneRequesterPeripheral extends SyncedPeripheral<RedstoneReques
 		for (int i = 0; i < stacks.size(); i++) {
 			ItemStack stack = stacks.get(i).stack;
 			Map<String, Object> details = new HashMap<>(
-					VanillaDetailRegistries.ITEM_STACK.getDetails(stack));
+					DetailRegistries.ITEM_STACK.getDetails(stack));
 			if (!details.get("name").equals("minecraft:air")) {
 				details.put("count", stacks.get(i).count);
 				result.put(i + 1, details); // +1 because lua
@@ -123,7 +123,7 @@ public class RedstoneRequesterPeripheral extends SyncedPeripheral<RedstoneReques
 				Object arg = arguments.get(i);
 				if (arg instanceof String itemName) {
 					ResourceLocation resourceLocation = ResourceLocation.tryParse(itemName);
-					ItemLike item = BuiltInRegistries.ITEM.get(resourceLocation);
+					ItemLike item = net.minecraft.core.Registry.ITEM.get(resourceLocation);
 					list.add(new BigItemStack(new ItemStack(item), 1));
 				} else if (arg instanceof Map<?, ?> itemData) {
 					String itemName = "minecraft:air";
@@ -138,7 +138,7 @@ public class RedstoneRequesterPeripheral extends SyncedPeripheral<RedstoneReques
 							throw new LuaException("Count for item " + itemName + " exceeds 256");
 					}
 					ResourceLocation resourceLocation = ResourceLocation.tryParse(itemName);
-					ItemLike item = BuiltInRegistries.ITEM.get(resourceLocation);
+					ItemLike item = net.minecraft.core.Registry.ITEM.get(resourceLocation);
 					list.add(new BigItemStack(new ItemStack(item), count));
 				}
 			}

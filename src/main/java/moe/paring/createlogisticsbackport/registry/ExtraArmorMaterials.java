@@ -6,6 +6,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
@@ -13,7 +14,7 @@ import java.util.function.Supplier;
 public enum ExtraArmorMaterials implements ArmorMaterial {
     CARDBOARD(Create.asResource("cardboard")
             .toString(), 4, new int[] { 1, 1, 1, 1 }, 25, () -> SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F,
-            () -> Ingredient.of(ExtraItems.CARDBOARD))
+            () -> Ingredient.of(ExtraItems.CARDBOARD.get()))
 
     ;
 
@@ -70,13 +71,27 @@ public enum ExtraArmorMaterials implements ArmorMaterial {
     }
 
     @Override
-    public int getDurabilityForType(ArmorItem.Type pType) {
-        return MAX_DAMAGE_ARRAY[pType.ordinal()] * this.maxDamageFactor;
+    public int getDurabilityForSlot(EquipmentSlot pType) {
+        int index = switch (pType) {
+            case HEAD -> 0;
+            case CHEST -> 1;
+            case LEGS -> 2;
+            case FEET -> 3;
+            default -> 0;
+        };
+        return MAX_DAMAGE_ARRAY[index] * this.maxDamageFactor;
     }
 
     @Override
-    public int getDefenseForType(ArmorItem.Type pType) {
-        return this.damageReductionAmountArray[pType.ordinal()];
+    public int getDefenseForSlot(EquipmentSlot pType) {
+        int index = switch (pType) {
+            case HEAD -> 0;
+            case CHEST -> 1;
+            case LEGS -> 2;
+            case FEET -> 3;
+            default -> 0;
+        };
+        return this.damageReductionAmountArray[index];
     }
 
 }

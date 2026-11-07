@@ -79,7 +79,7 @@ public class StockTickerBlock extends HorizontalDirectionalBlock implements IBE<
 
 			if (pPlayer instanceof ServerPlayer sp) {
 				if (stbe.isKeeperPresent())
-					NetworkHooks.openScreen(sp, stbe.new CategoryMenuProvider(), stbe.getBlockPos());
+					NetworkHooks.openGui(sp, stbe.new CategoryMenuProvider(), stbe.getBlockPos());
 				else
 					Lang.translate("stock_ticker.keeper_missing")
 						.sendStatus(pPlayer);

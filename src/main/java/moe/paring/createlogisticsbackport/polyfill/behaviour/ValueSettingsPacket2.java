@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.polyfill.behaviour;
 
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.networking.BlockEntityConfigurationPacket;

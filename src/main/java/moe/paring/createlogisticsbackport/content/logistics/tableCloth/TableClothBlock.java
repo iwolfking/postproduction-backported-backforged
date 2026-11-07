@@ -115,7 +115,7 @@ public class TableClothBlock extends Block implements IHaveBigOutline, IWrenchab
 	@SuppressWarnings("deprecation")
 	@Override
 	public List<ItemStack> getDrops(BlockState pState,
-		net.minecraft.world.level.storage.loot.LootParams.Builder pParams) {
+		net.minecraft.world.level.storage.loot.LootContext.Builder pParams) {
 		List<ItemStack> drops = super.getDrops(pState, pParams);
 
 		if (!(pParams.getOptionalParameter(LootContextParams.BLOCK_ENTITY) instanceof TableClothBlockEntity dcbe))
@@ -206,8 +206,7 @@ public class TableClothBlock extends Block implements IHaveBigOutline, IWrenchab
 		public PlacementOffset getOffset(Player player, Level world, BlockState state, BlockPos pos,
 										 BlockHitResult ray) {
 			List<Direction> directions = IPlacementHelper.orderedByDistanceExceptAxis(pos, ray.getLocation(), Axis.Y,
-				dir -> world.getBlockState(pos.relative(dir))
-					.canBeReplaced());
+				dir -> world.getBlockState(pos.relative(dir)).getBlock().canBeReplaced(world.getBlockState(pos.relative(dir)), net.minecraft.world.level.material.Fluids.EMPTY));
 
 			if (directions.isEmpty())
 				return PlacementOffset.fail();

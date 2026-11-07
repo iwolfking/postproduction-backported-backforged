@@ -27,14 +27,14 @@ public class AbstractChuteBlockMixin {
         if (stack.isEmpty())
             return;
         ci.cancel();
-        if (entityIn.level().isClientSide)
+        if (entityIn.level.isClientSide)
             return;
         if (!entityIn.isAlive())
             return;
-        BlockPos pos = BlockPos.containing(entityIn.position()
+        BlockPos pos = new BlockPos(entityIn.position()
                         .add(0, 0.5f, 0))
                 .below();
-        DirectBeltInputBehaviour input = BlockEntityBehaviour.get(entityIn.level(), pos, DirectBeltInputBehaviour.TYPE);
+        DirectBeltInputBehaviour input = BlockEntityBehaviour.get(entityIn.level, pos, DirectBeltInputBehaviour.TYPE);
         if (input == null)
             return;
         if (!input.canInsertFromSide(Direction.UP))

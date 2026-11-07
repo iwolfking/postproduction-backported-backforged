@@ -6,7 +6,6 @@ import moe.paring.createlogisticsbackport.content.logistics.box.PackageItem;
 import moe.paring.createlogisticsbackport.content.logistics.box.PackageStyles;
 import moe.paring.createlogisticsbackport.content.logistics.packager.PackagerGenerator;
 import moe.paring.createlogisticsbackport.content.logistics.tableCloth.TableClothBlockItem;
-import moe.paring.createlogisticsbackport.content.logistics.tableCloth.TableClothModel;
 import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
@@ -19,12 +18,11 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import moe.paring.createlogisticsbackport.registry.ExtraBlockTags;
 import moe.paring.createlogisticsbackport.registry.ExtraItemTags;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.MaterialColor;
 
 import java.util.Locale;
 
@@ -36,7 +34,7 @@ public class BuilderTransformersExtra {
         return b -> b.initialProperties(SharedProperties::softMetal)
                 .properties(p -> p.noOcclusion())
                 .properties(p -> p.isRedstoneConductor(($1, $2, $3) -> false))
-                .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
+                .properties(p -> p.color(MaterialColor.TERRACOTTA_BLUE)
                         .sound(SoundType.NETHERITE_BLOCK))
                 .transform(pickaxeOnly())
                 .addLayer(() -> RenderType::cutoutMipped)
@@ -54,9 +52,8 @@ public class BuilderTransformersExtra {
                     .blockstate((c, p) -> p.simpleBlock(c.get(), p.models()
                             .withExistingParent(name + "_table_cloth", p.modLoc("block/table_cloth/block"))
                             .texture("0", p.modLoc("block/table_cloth/" + name))))
-                    .onRegister(CreateRegistrate.blockModel(() -> TableClothModel::new))
                     .tag(ExtraBlockTags.TABLE_CLOTHS.tag)
-                    .onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.create.table_cloth"))
+                    .onRegisterAfter(Registry.ITEM_REGISTRY, v -> ItemDescription.useKey(v, "block.create.table_cloth"))
                     .item(TableClothBlockItem::new);
 
             if (dyed)
@@ -65,7 +62,7 @@ public class BuilderTransformersExtra {
             return item.model((c, p) -> p.withExistingParent(name + "_table_cloth", p.modLoc("block/table_cloth/item"))
                             .texture("0", p.modLoc("block/table_cloth/" + name)))
                     .tag(ExtraItemTags.TABLE_CLOTHS.tag)
-                    .recipe((c, p) -> ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, c.get())
+                    .recipe((c, p) -> ShapelessRecipeBuilder.shapeless( c.get())
                             .requires(c.get())
                             .unlockedBy("has_" + c.getName(), RegistrateRecipeProvider.has(c.get()))
                             .save(p, Create.asResource("crafting/logistics/" + c.getName() + "_clear")))

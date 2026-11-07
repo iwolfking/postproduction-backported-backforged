@@ -103,19 +103,19 @@
 			"name": "frame",
 			"origin": [0, 0, 0],
 			"color": 0,
-			"children": [0, 1]
+			"parts": [0, 1]
 		},
 		{
 			"name": "tracks",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [2, 3, 4, 5]
+			"parts": [2, 3, 4, 5]
 		},
 		{
 			"name": "interior",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [6, 7]
+			"parts": [6, 7]
 		}
 	]
 }

@@ -4,7 +4,7 @@ import com.simibubi.create.Create;
 import com.simibubi.create.foundation.utility.NBTHelper;
 import moe.paring.createlogisticsbackport.CreateLogisticsBackport;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -63,7 +63,7 @@ public class LogisticsNetwork {
 
 		NBTHelper.iterateCompoundList(tag.getList("Links", Tag.TAG_COMPOUND), nbt -> {
 			network.totalLinks.add(GlobalPos.of(nbt.contains("Dim")
-				? ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("Dim")))
+				? ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("Dim")))
 				: Level.OVERWORLD, NbtUtils.readBlockPos(nbt)));
 		});
 

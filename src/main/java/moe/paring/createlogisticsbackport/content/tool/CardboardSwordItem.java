@@ -24,10 +24,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock.Action;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -75,19 +73,17 @@ public class CardboardSwordItem extends SwordItem {
 		ItemStack itemStack = event.getItemStack();
 		if (!ExtraItems.CARDBOARD_SWORD.isIn(itemStack))
 			return;
-		if (event.getAction() != Action.START)
-			return;
 		if (event.getSide() == LogicalSide.CLIENT)
-			ExtraSoundEvents.CARDBOARD_SWORD.playAt(event.getLevel(), event.getPos(), 0.5f, 1.85f, false);
+			ExtraSoundEvents.CARDBOARD_SWORD.playAt(event.getWorld(), event.getPos(), 0.5f, 1.85f, false);
 		else
-			ExtraSoundEvents.CARDBOARD_SWORD.play(event.getLevel(), event.getEntity(), event.getPos(), 0.5f, 1.85f);
+			ExtraSoundEvents.CARDBOARD_SWORD.play(event.getWorld(), event.getPlayer(), event.getPos(), 0.5f, 1.85f);
 	}
 
 	@SubscribeEvent
 	public static void cardboardSwordsCannotHurtYou(LivingAttackEvent event) {
 		Entity attacker = event.getSource()
 			.getEntity();
-		LivingEntity target = event.getEntity();
+		LivingEntity target = (LivingEntity) event.getEntity();
 		if (target == null || target.getMobType() == MobType.ARTHROPOD)
 			return;
 		if (!(attacker instanceof LivingEntity livingAttacker
@@ -133,10 +129,6 @@ public class CardboardSwordItem extends SwordItem {
 		target.knockback(knockbackStrength * 0.5F, Mth.sin(yRot * Mth.DEG_TO_RAD), -Mth.cos(yRot * Mth.DEG_TO_RAD));
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(SimpleCustomRenderer.create(this, new CardboardSwordItemRenderer()));
-	}
+	// initializeClient temporarily disabled for 1.18
 
 }

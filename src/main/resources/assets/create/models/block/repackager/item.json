@@ -109,31 +109,31 @@
 			"name": "frame",
 			"origin": [0, 0, 0],
 			"color": 0,
-			"children": [0, 1]
+			"parts": [0, 1]
 		},
 		{
 			"name": "door",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [2]
+			"parts": [2]
 		},
 		{
 			"name": "tracks",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [3, 4]
+			"parts": [3, 4]
 		},
 		{
 			"name": "sled",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [5]
+			"parts": [5]
 		},
 		{
 			"name": "interior",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [6, 7]
+			"parts": [6, 7]
 		}
 	]
 }

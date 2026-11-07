@@ -40,7 +40,7 @@ public class RedstoneRequesterMenu extends GhostItemMenu<RedstoneRequesterBlockE
 		ItemStackHandler inventory = new ItemStackHandler(9);
 		List<BigItemStack> stacks = contentHolder.encodedRequest.stacks();
 		for (int i = 0; i < stacks.size(); i++)
-			inventory.setStackInSlot(i, stacks.get(i).stack.copyWithCount(1));
+			inventory.setStackInSlot(i, moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(stacks.get(i).stack, 1));
 		return inventory;
 	}
 
@@ -77,7 +77,7 @@ public class RedstoneRequesterMenu extends GhostItemMenu<RedstoneRequesterBlockE
 			ItemStack stackInSlot = ghostInventory.getStackInSlot(i);
 			if (stackInSlot.isEmpty())
 				continue;
-			list.add(new BigItemStack(stackInSlot.copyWithCount(1), i < stacks.size() ? stacks.get(i).count : 1));
+			list.add(new moe.paring.createlogisticsbackport.content.logistics.BigItemStack(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(stackInSlot, 1), i < stacks.size() ? stacks.get(i).count : 1));
 		}
 
 		PackageOrderWithCrafts newRequest = new PackageOrderWithCrafts(new PackageOrder(list), contentHolder.encodedRequest.orderedCrafts());

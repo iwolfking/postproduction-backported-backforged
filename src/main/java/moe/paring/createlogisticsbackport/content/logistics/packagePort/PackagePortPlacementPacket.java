@@ -40,7 +40,7 @@ public class PackagePortPlacementPacket extends SimplePacketBase {
 			ServerPlayer player = context.getSender();
 			if (player == null)
 				return;
-			Level world = player.level();
+			Level world = player.level;
 			if (world == null || !world.isLoaded(pos))
 				return;
 			BlockEntity blockEntity = world.getBlockEntity(pos);

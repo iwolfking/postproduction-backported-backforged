@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.foundation.blockEntity.behaviour.inventory;
 
+import net.minecraftforge.items.CapabilityItemHandler;
 import com.google.common.base.Predicates;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
@@ -12,7 +13,7 @@ import moe.paring.createlogisticsbackport.content.logistics.packager.IdentifiedI
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
@@ -63,7 +64,7 @@ public class InvManipulationBehaviour2 extends CapManipulationBehaviourBase<IIte
 
     @Override
     protected Capability<IItemHandler> capability() {
-        return ForgeCapabilities.ITEM_HANDLER;
+        return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
     }
 
     public ItemStack extract() {

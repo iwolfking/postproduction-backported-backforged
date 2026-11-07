@@ -32,7 +32,7 @@ public class LogisticallyLinkedBlockItem extends BlockItem {
 
 	public static boolean isTuned(ItemStack pStack) {
 		return pStack.hasTag() && pStack.getTag()
-			.contains(BLOCK_ENTITY_TAG);
+			.contains("BlockEntityTag");
 	}
 	
 	@Nullable
@@ -40,7 +40,7 @@ public class LogisticallyLinkedBlockItem extends BlockItem {
 		if (!isTuned(pStack))
 			return null;
 		CompoundTag tag = pStack.getTag()
-			.getCompound(BLOCK_ENTITY_TAG);
+			.getCompound("BlockEntityTag");
 		if (!tag.hasUUID("Freq"))
 			return null;
 		return tag.getUUID("Freq");
@@ -53,7 +53,7 @@ public class LogisticallyLinkedBlockItem extends BlockItem {
 			return;
 
 		CompoundTag tag = pStack.getTag()
-			.getCompound(BLOCK_ENTITY_TAG);
+			.getCompound("BlockEntityTag");
 		if (!tag.hasUUID("Freq"))
 			return;
 
@@ -104,7 +104,7 @@ public class LogisticallyLinkedBlockItem extends BlockItem {
 		CompoundTag stackTag = stack.getOrCreateTag();
 		CompoundTag teTag = new CompoundTag();
 		teTag.putUUID("Freq", frequency);
-		stackTag.put(BLOCK_ENTITY_TAG, teTag);
+		stackTag.put("BlockEntityTag", teTag);
 
 		player.displayClientMessage(Lang.translateDirect("logistically_linked.tuned"), true);
 		stack.setTag(stackTag);

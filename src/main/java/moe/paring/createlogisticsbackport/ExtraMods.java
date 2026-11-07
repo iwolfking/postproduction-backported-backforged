@@ -27,7 +27,7 @@ public enum ExtraMods {
     }
 
     public ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(id, path);
+        return new ResourceLocation(id, path);
     }
 
     public Block getBlock(String id) {

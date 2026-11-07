@@ -5,18 +5,15 @@ import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat.Chaser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
-public class CardboardArmorStealthOverlay extends Gui implements IClientItemExtensions {
+public class CardboardArmorStealthOverlay extends Gui {
 
 	public CardboardArmorStealthOverlay() {
-		super(Minecraft.getInstance(), Minecraft.getInstance()
-			.getItemRenderer());
+		super(Minecraft.getInstance());
 	}
 
 	private static final ResourceLocation PACKAGE_BLUR_LOCATION = Create.asResource("textures/misc/package_blur.png");
@@ -34,7 +31,6 @@ public class CardboardArmorStealthOverlay extends Gui implements IClientItemExte
 		opacity.updateChaseTarget(CardboardArmorHandler.testForStealth(player) ? 1 : 0);
 	}
 
-	@Override
 	public void renderHelmetOverlay(ItemStack stack, Player player, int width, int height, float partialTick) {
 		Minecraft mc = Minecraft.getInstance();
 		float value = opacity.getValue(partialTick);
@@ -42,8 +38,7 @@ public class CardboardArmorStealthOverlay extends Gui implements IClientItemExte
 			return;
 		screenWidth = width;
 		screenHeight = height;
-		renderTextureOverlay(new GuiGraphics(mc, mc.renderBuffers()
-			.bufferSource()), PACKAGE_BLUR_LOCATION, value);
+ 		renderTextureOverlay(PACKAGE_BLUR_LOCATION, value);
 	}
 
 }

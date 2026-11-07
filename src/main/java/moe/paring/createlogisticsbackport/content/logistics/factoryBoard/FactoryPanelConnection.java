@@ -75,7 +75,7 @@ public class FactoryPanelConnection {
 			boolean desperateOption = actualMode == 4;
 
 			BlockPos toTravelFirst = BlockPos.ZERO;
-			BlockPos toTravelLast = BlockPos.containing(diff.scale(2)
+			BlockPos toTravelLast = new BlockPos(diff.scale(2)
 				.add(0.1, 0.1, 0.1));
 
 			if (actualMode > 1) {
@@ -83,8 +83,8 @@ public class FactoryPanelConnection {
 				boolean flipZ = diff.z > 0 ^ (actualMode % 2 == 0);
 				int ceilX = Mth.positiveCeilDiv(toTravelLast.getX(), 2);
 				int ceilZ = Mth.positiveCeilDiv(toTravelLast.getZ(), 2);
-				int floorZ = Mth.floorDiv(toTravelLast.getZ(), 2);
-				int floorX = Mth.floorDiv(toTravelLast.getX(), 2);
+				int floorZ = Math.floorDiv(toTravelLast.getZ(), 2);
+				int floorX = Math.floorDiv(toTravelLast.getX(), 2);
 				toTravelFirst = new BlockPos(flipX ? floorX : ceilX, 0, flipZ ? floorZ : ceilZ);
 				toTravelLast = new BlockPos(!flipX ? floorX : ceilX, 0, !flipZ ? floorZ : ceilZ);
 			}

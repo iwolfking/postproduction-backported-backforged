@@ -25,12 +25,12 @@ public class PlayerSkyhookRenderer {
         if (hangingPlayers.contains(player.getUUID()))
             return;
 
-        model.head.resetPose();
-        model.body.resetPose();
-        model.leftArm.resetPose();
-        model.rightArm.resetPose();
-        model.leftLeg.resetPose();
-        model.rightLeg.resetPose();
+        model.head.xRot = 0; model.head.yRot = 0; model.head.zRot = 0;
+        model.body.xRot = 0; model.body.yRot = 0; model.body.zRot = 0;
+        model.leftArm.xRot = 0; model.leftArm.yRot = 0; model.leftArm.zRot = 0;
+        model.rightArm.xRot = 0; model.rightArm.yRot = 0; model.rightArm.zRot = 0;
+        model.leftLeg.xRot = 0; model.leftLeg.yRot = 0; model.leftLeg.zRot = 0;
+        model.rightLeg.xRot = 0; model.rightLeg.yRot = 0; model.rightLeg.zRot = 0;
     }
 
     public static void afterSetupAnim(Player player, HumanoidModel<?> model) {
@@ -40,11 +40,11 @@ public class PlayerSkyhookRenderer {
 
     private static void setHangingPose(HumanoidModel<?> model) {
         model.head.x = 0;
-        model.body.resetPose();
-        model.leftArm.resetPose();
-        model.rightArm.resetPose();
-        model.leftLeg.resetPose();
-        model.rightLeg.resetPose();
+        model.body.xRot = 0; model.body.yRot = 0; model.body.zRot = 0;
+        model.leftArm.xRot = 0; model.leftArm.yRot = 0; model.leftArm.zRot = 0;
+        model.rightArm.xRot = 0; model.rightArm.yRot = 0; model.rightArm.zRot = 0;
+        model.leftLeg.xRot = 0; model.leftLeg.yRot = 0; model.leftLeg.zRot = 0;
+        model.rightLeg.xRot = 0; model.rightLeg.yRot = 0; model.rightLeg.zRot = 0;
 
         float time = AnimationTickHolder.getTicks(true) + AnimationTickHolder.getPartialTicks();
         float mainCycle = Mth.sin(((float) ((time + 10) * 0.3f / Math.PI)));

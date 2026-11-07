@@ -71,7 +71,7 @@ public class InventorySummary {
 		}
 
 		if (stack.getCount() > stack.getMaxStackSize())
-			stack = stack.copyWithCount(1);
+			stack = moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(stack, 1);
 
 		BigItemStack newEntry = new BigItemStack(stack, count);
 		stacks.add(newEntry);

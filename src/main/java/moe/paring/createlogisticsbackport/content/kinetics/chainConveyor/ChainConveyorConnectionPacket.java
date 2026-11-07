@@ -75,7 +75,7 @@ public class ChainConveyorConnectionPacket extends BlockEntityConfigurationPacke
 			}
 			be.chainDestroyed(targetPos.subtract(be.getBlockPos()), false, true);
 			be.getLevel()
-				.playSound(null, player.blockPosition(), SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS);
+				.playSound(null, player.blockPosition(), SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS, 1f, 1f);
 		}
 
 		if (connect) {

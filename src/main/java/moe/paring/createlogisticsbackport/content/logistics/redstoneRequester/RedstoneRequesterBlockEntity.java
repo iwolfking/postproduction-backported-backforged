@@ -55,13 +55,12 @@ public class RedstoneRequesterBlockEntity extends StockCheckingBlockEntity imple
 
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-		super.addBehaviours(behaviours);
-		behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
+		super.addBehaviours(behaviours);        computerBehaviour = null;
 	}
 
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
-		if (computerBehaviour.isPeripheralCap(cap))
+		if (computerBehaviour != null && computerBehaviour.isPeripheralCap(cap))
 			return computerBehaviour.getPeripheralCapability();
 		return super.getCapability(cap, side);
 	}
@@ -145,13 +144,13 @@ public class RedstoneRequesterBlockEntity extends StockCheckingBlockEntity imple
 		if (!behaviour.mayInteractMessage(player))
 			return InteractionResult.SUCCESS;
 
-		NetworkHooks.openScreen((ServerPlayer) player, this, worldPosition);
+		NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	public Component getDisplayName() {
-		return Component.empty();
+		return net.minecraft.network.chat.TextComponent.EMPTY;
 	}
 
 	@Override

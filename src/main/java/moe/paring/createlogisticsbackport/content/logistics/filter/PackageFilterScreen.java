@@ -10,7 +10,6 @@ import moe.paring.createlogisticsbackport.content.logistics.AddressEditBox;
 import moe.paring.createlogisticsbackport.content.logistics.box.PackageStyles;
 import moe.paring.createlogisticsbackport.registry.ExtraGuiTextures;
 import moe.paring.createlogisticsbackport.registry.ExtraPackets;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -54,10 +53,10 @@ public class PackageFilterScreen extends AbstractFilterScreen2<PackageFilterMenu
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(graphics, mouseX, mouseY, partialTicks);
 
-		PoseStack ms = graphics.pose();
+		PoseStack ms = graphics;
 		ms.pushPose();
 		ms.translate(leftPos + 16, topPos + 23, 0);
 		GuiGameElement.of(PackageStyles.getDefaultBox())

@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.content.logistics.packager;
 
+import net.minecraftforge.items.CapabilityItemHandler;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.compat.computercraft.ComputerCraftProxy;
 import com.simibubi.create.content.contraptions.actors.psi.PortableStorageInterfaceBlockEntity;
@@ -43,10 +44,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -105,7 +105,8 @@ public class PackagerBlockEntity extends SmartBlockEntity {
         behaviours.add(targetInventory = new InvManipulationBehaviour2(this, InterfaceProvider.oppositeOfBlockFacing())
                 .withFilter(this::supportsBlockEntity));
         behaviours.add(invVersionTracker = new VersionedInventoryTrackerBehaviour(this));
-        behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
+        // ComputerCraft behaviour disabled for this backport to avoid missing peripheral
+        computerBehaviour = null;
     }
 
     private boolean supportsBlockEntity(BlockEntity target) {
@@ -148,7 +149,7 @@ public class PackagerBlockEntity extends SmartBlockEntity {
             if (animationTicks == CYCLE - (animationInward ? 5 : 1))
                 ExtraSoundEvents.PACKAGER.playAt(level, worldPosition, 1, 1, true);
             if (animationTicks == (animationInward ? 1 : 5))
-                level.playLocalSound(worldPosition, SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 0.25f, 0.75f,
+                level.playLocalSound(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 0.25f, 0.75f,
                         true);
         }
 
@@ -506,7 +507,7 @@ public class PackagerBlockEntity extends SmartBlockEntity {
                 continue;
             signBasedAddress = address;
         }
-        if (computerBehaviour.hasAttachedComputer() && hasCustomComputerAddress) {
+        if (computerBehaviour != null && computerBehaviour.hasAttachedComputer() && hasCustomComputerAddress) {
             signBasedAddress = customComputerAddress;
         } else {
             hasCustomComputerAddress = false;
@@ -518,10 +519,9 @@ public class PackagerBlockEntity extends SmartBlockEntity {
         if (!(blockEntity instanceof SignBlockEntity sign))
             return null;
         for (boolean front : Iterate.trueAndFalse) {
-            SignText text = sign.getText(front);
             String address = "";
-            for (Component component : text.getMessages(false)) {
-                String string = component.getString();
+            for (int i = 0; i < 4; i++) {
+                String string = sign.getMessage(i, front).getString();
                 if (!string.isBlank())
                     address += string.trim() + " ";
             }
@@ -592,9 +592,9 @@ public class PackagerBlockEntity extends SmartBlockEntity {
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER)
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
             return invProvider.cast();
-        if (computerBehaviour.isPeripheralCap(cap))
+        if (computerBehaviour != null && computerBehaviour.isPeripheralCap(cap))
             return computerBehaviour.getPeripheralCapability();
         return super.getCapability(cap, side);
     }

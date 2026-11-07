@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.content.logistics.factoryBoard;
 
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBehaviour;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.simibubi.create.AllBlocks;
@@ -28,6 +29,7 @@ import moe.paring.createlogisticsbackport.content.logistics.stockTicker.PackageO
 import moe.paring.createlogisticsbackport.content.logistics.stockTicker.PackageOrderWithCrafts;
 import moe.paring.createlogisticsbackport.mixin.SmartBlockEntityAccessor;
 import moe.paring.createlogisticsbackport.polyfill.behaviour.ValueSettingsBoard2;
+import moe.paring.createlogisticsbackport.polyfill.behaviour.ValueSettingsBehaviour2;
 import moe.paring.createlogisticsbackport.polyfill.behaviour.ValueSettingsFormatter2;
 import moe.paring.createlogisticsbackport.polyfill.behaviour.filtering.FilteringBehaviour2;
 import moe.paring.createlogisticsbackport.registry.ExtraBlocks;
@@ -48,6 +50,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -255,7 +258,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
         player.displayClientMessage(Lang.translate("factory_panel.relocated")
                 .style(ChatFormatting.GREEN)
                 .component(), true);
-        player.level()
+        player.level
                 .playSound(null, newPos.pos(), SoundEvents.COPPER_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
     }
 
@@ -427,7 +430,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
         // Panel may enforce item arrangement
         if (!activeCraftingArrangement.isEmpty())
             craftingContext = PackageOrderWithCrafts.singleRecipe(activeCraftingArrangement.stream()
-                    .map(stack -> new BigItemStack(stack.copyWithCount(1)))
+                    .map(stack -> new BigItemStack(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(stack, 1)))
                     .toList());
 
         // Collect request distributions
@@ -535,7 +538,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
             return;
         }
 
-        boolean isClientSide = player.level().isClientSide;
+        boolean isClientSide = player.level.isClientSide;
 
         // Wrench cycles through arrow bending
         if (targeting.size() + targetedByLinks.size() > 0 && AllItemTags.WRENCH.matches(player.getItemInHand(hand))) {
@@ -587,7 +590,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
             // Open screen for setting an item through JEI
             if (heldItem.isEmpty()) {
                 if (!isClientSide && player instanceof ServerPlayer sp)
-                    NetworkHooks.openScreen(sp, this, buf -> getPanelPosition().send(buf));
+                    NetworkHooks.openGui(sp, this, buf -> getPanelPosition().send(buf));
                 return;
             }
 
@@ -838,11 +841,11 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
     }
 
     @Override
-    public MutableComponent formatValue(ValueSettings2 value) {
+    public MutableComponent formatValue(ValueSettingsBehaviour2.ValueSettings2 value) {
         if (value.value() == 0) {
             return Lang.translateDirect("gui.factory_panel.inactive");
         } else {
-            return Component.literal(Math.max(0, value.value()) + ((value.row() == 0) ? "" : "\u25A4"));
+            return new net.minecraft.network.chat.TextComponent(Math.max(0, value.value()) + ((value.row() == 0) ? "" : "\u25A4"));
         }
     }
 
@@ -858,7 +861,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
     }
 
     @Override
-    public void setValueSettings(Player player, ValueSettings2 settings, boolean ctrlDown) {
+    public void setValueSettings(Player player, ValueSettingsBehaviour2.ValueSettings2 settings, boolean ctrlDown) {
         if (getValueSettings().equals(settings))
             return;
         count = Math.max(0, settings.value());
@@ -923,8 +926,8 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
     }
 
     @Override
-    public ValueSettings2 getValueSettings() {
-        return new ValueSettings2(upTo ? 0 : 1, count);
+    public ValueSettingsBehaviour2.ValueSettings2 getValueSettings() {
+        return new ValueSettingsBehaviour2.ValueSettings2(upTo ? 0 : 1, count);
     }
 
     @Override
@@ -940,9 +943,9 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
     @Override
     public MutableComponent getCountLabelForValueBox() {
         if (filter.isEmpty())
-            return Component.empty();
+            return new net.minecraft.network.chat.TextComponent("");
         if (waitingForNetwork) {
-            return Component.literal("?");
+            return new net.minecraft.network.chat.TextComponent("?");
         }
 
         int levelInStorage = getLevelInStorage();
@@ -993,8 +996,11 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
 
     @OnlyIn(value = Dist.CLIENT)
     public void displayScreen(Player player) {
-        if (player instanceof LocalPlayer)
-            ScreenOpener.open(new FactoryPanelScreen(this));
+        com.simibubi.create.foundation.gui.ScreenOpener.open(
+                new FactoryPanelSetItemScreen(
+                        FactoryPanelSetItemMenu.create(-1, player.getInventory(), this),
+                        player.getInventory(),
+                        new net.minecraft.network.chat.TextComponent("Factory Panel")));
     }
 
     public int getIngredientStatusColor() {
@@ -1004,14 +1010,9 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
 
     @Override
     public ItemRequirement getRequiredItems() {
-        return isActive() ? new ItemRequirement(ItemRequirement.ItemUseType.CONSUME, ExtraBlocks.FACTORY_GAUGE.asItem())
+        return isActive() ? new ItemRequirement(ItemRequirement.ItemUseType.CONSUME, ExtraBlocks.FACTORY_GAUGE.get().asItem())
                 : ItemRequirement.NONE;
     }
-
-//    @Override
-//    public boolean canShortInteract(ItemStack toApply) {
-//        return true;
-//    }
 
     @Override
     public boolean readFromClipboard(CompoundTag tag, Player player, Direction side, boolean simulate) {

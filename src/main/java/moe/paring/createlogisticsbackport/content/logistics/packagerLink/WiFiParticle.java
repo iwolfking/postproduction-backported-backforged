@@ -39,9 +39,11 @@ public class WiFiParticle extends CustomRotationParticle {
 	}
 
 	@Override
-	public Quaternionf getCustomRotation(Camera camera, float partialTicks) {
-		return new Quaternionf().rotateY(-camera.getYRot() * Mth.DEG_TO_RAD)
-			.mul(new Quaternionf().rotateZ(downward ? Mth.PI : 0));
+	public com.mojang.math.Quaternion getCustomRotation(Camera camera, float partialTicks) {
+		com.mojang.math.Quaternion q = new com.mojang.math.Quaternion(new com.mojang.math.Vector3f(0, 1, 0), -camera.getYRot() * Mth.DEG_TO_RAD, false);
+		com.mojang.math.Quaternion z = new com.mojang.math.Quaternion(new com.mojang.math.Vector3f(0, 0, 1), downward ? Mth.PI : 0, false);
+		q.mul(z);
+		return q;
 	}
 
 	public static class Data extends BasicParticleData<WiFiParticle> implements ParticleOptions {

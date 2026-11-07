@@ -124,7 +124,7 @@ public class ShoppingListItem extends Item {
 					boolean cost = items == lists.getSecond();
 
 					if (cost)
-						pTooltipComponents.add(Component.empty());
+						pTooltipComponents.add(net.minecraft.network.chat.TextComponent.EMPTY);
 
 					if (entries.size() == 1) {
 						BigItemStack entry = entries.get(0);
@@ -171,7 +171,7 @@ public class ShoppingListItem extends Item {
 
 		Lang.translate("table_cloth.shopping_list_discarded")
 			.sendStatus(pPlayer);
-		pPlayer.playSound(SoundEvents.BOOK_PAGE_TURN);
+		pPlayer.playSound(SoundEvents.BOOK_PAGE_TURN, 1f, 1f);
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, ItemStack.EMPTY);
 	}
 
@@ -185,7 +185,7 @@ public class ShoppingListItem extends Item {
 
 		Lang.translate("table_cloth.shopping_list_discarded")
 			.sendStatus(pPlayer);
-		pPlayer.playSound(SoundEvents.BOOK_PAGE_TURN);
+		pPlayer.playSound(SoundEvents.BOOK_PAGE_TURN, 1f, 1f);
 		return InteractionResult.SUCCESS;
 	}
 

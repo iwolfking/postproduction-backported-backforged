@@ -1,5 +1,6 @@
 package moe.paring.createlogisticsbackport.mixin;
 
+import net.minecraftforge.items.CapabilityItemHandler;
 import com.simibubi.create.content.kinetics.belt.BeltBlock;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltHelper;
@@ -14,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import net.minecraftforge.items.IItemHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,7 +49,7 @@ public class BeltBlockMixin {
             if (BeltTunnelInteractionHandler.getTunnelOnPosition(worldIn, pos) != null)
                 return;
             self.withBlockEntityDo(worldIn, pos, be -> {
-                IItemHandler handler = be.getCapability(ForgeCapabilities.ITEM_HANDLER)
+                IItemHandler handler = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
                         .orElse(null);
                 if (handler == null)
                     return;

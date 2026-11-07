@@ -58,6 +58,7 @@ public class CreateLogisticsBackport {
             ExtraRecipeTypes.register(modEventBus);
             ExtraParticleTypes.register(modEventBus);
 
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ExtraPartialModels.init());
             modEventBus.addListener(CreateLogisticsBackport::init);
             modEventBus.addListener(ExtraEntityTypes::registerEntityAttributes);
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> CreateLogisticsBackportClient.onInit(modEventBus, forgeEventBus));

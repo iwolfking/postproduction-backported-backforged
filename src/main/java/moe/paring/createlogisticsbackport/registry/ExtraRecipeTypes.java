@@ -8,7 +8,7 @@ import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import com.simibubi.create.foundation.utility.Lang;
 import moe.paring.createlogisticsbackport.CreateLogisticsBackport;
 import moe.paring.createlogisticsbackport.foundation.recipe.ItemCopyingRecipe;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.*;
@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 import static com.simibubi.create.AllRecipeTypes.CAN_BE_AUTOMATED;
 
 public enum ExtraRecipeTypes implements IRecipeTypeInfo {
-    ITEM_COPYING(() -> new SimpleCraftingRecipeSerializer<>(ItemCopyingRecipe::new), () -> RecipeType.CRAFTING, false);
+    ITEM_COPYING(() -> new SimpleRecipeSerializer<>(ItemCopyingRecipe::new), () -> RecipeType.CRAFTING, false);
 
     private final ResourceLocation id;
     private final RegistryObject<RecipeSerializer<?>> serializerObject;
@@ -50,8 +50,8 @@ public enum ExtraRecipeTypes implements IRecipeTypeInfo {
         String name = Lang.asId(name());
         id = Create.asResource(name);
         serializerObject = Registers.SERIALIZER_REGISTER.register(name, serializerSupplier);
-        typeObject = Registers.TYPE_REGISTER.register(name, () -> RecipeType.simple(id));
-        type = typeObject;
+        typeObject = null;
+        type = () -> RecipeType.CRAFTING;
     }
 
     ExtraRecipeTypes(ProcessingRecipeBuilder.ProcessingRecipeFactory<?> processingFactory) {
@@ -95,6 +95,6 @@ public enum ExtraRecipeTypes implements IRecipeTypeInfo {
 
     private static class Registers {
         private static final DeferredRegister<RecipeSerializer<?>> SERIALIZER_REGISTER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, CreateLogisticsBackport.MODID);
-        private static final DeferredRegister<RecipeType<?>> TYPE_REGISTER = DeferredRegister.create(Registries.RECIPE_TYPE, CreateLogisticsBackport.MODID);
+        private static final DeferredRegister<RecipeType<?>> TYPE_REGISTER = DeferredRegister.create(Registry.RECIPE_TYPE_REGISTRY, CreateLogisticsBackport.MODID);
     }
 }

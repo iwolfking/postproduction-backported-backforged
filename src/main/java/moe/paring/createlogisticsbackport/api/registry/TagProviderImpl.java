@@ -39,7 +39,7 @@ public class TagProviderImpl<K, V> implements SimpleRegistry.Provider<K, V> {
 
     // eye of the beholder? check the nametag, buddy
     public static Holder<BlockEntityType<?>> getBeHolder(BlockEntityType<?> type) {
-        return ForgeRegistries.BLOCK_ENTITY_TYPES.getHolder(type).orElseThrow(
+        return ForgeRegistries.BLOCK_ENTITIES.getHolder(type).orElseThrow(
                 () -> new IllegalStateException("Unregistered BlockEntityType: " + type)
         );
     }

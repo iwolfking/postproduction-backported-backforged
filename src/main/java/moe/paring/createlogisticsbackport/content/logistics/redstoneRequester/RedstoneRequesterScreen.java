@@ -19,7 +19,6 @@ import moe.paring.createlogisticsbackport.registry.ExtraGuiTextures;
 import moe.paring.createlogisticsbackport.registry.ExtraIcons;
 import moe.paring.createlogisticsbackport.registry.ExtraPackets;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -108,25 +107,25 @@ public class RedstoneRequesterScreen extends AbstractSimiContainerScreen<Redston
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
+	protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pMouseX, int pMouseY) {
 		int x = getGuiLeft();
 		int y = getGuiTop();
-		ExtraGuiTextures.REDSTONE_REQUESTER.render(pGuiGraphics, x + 3, y);
-		renderPlayerInventory(pGuiGraphics, x - 3, y + 124);
+		ExtraGuiTextures.REDSTONE_REQUESTER.render(pPoseStack, x + 3, y);
+		renderPlayerInventory(pPoseStack, x - 3, y + 124);
 
 		ItemStack stack = ExtraBlocks.REDSTONE_REQUESTER.asStack();
 		Component title = Lang.text(stack.getHoverName()
 			.getString())
 			.component();
-		pGuiGraphics.drawString(font, title, x + 117 - font.width(title) / 2, y + 4, 0x3D3C48, false);
+		moe.paring.createlogisticsbackport.DrawHelper.drawString(pPoseStack,font, title, x + 117 - font.width(title) / 2, y + 4, 0x3D3C48, false);
 
 		GuiGameElement.of(stack)
 			.scale(3)
-			.render(pGuiGraphics, x + 245, y + 80);
+			.render(pPoseStack, x + 245, y + 80);
 	}
 
 	@Override
-	protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+	protected void renderForeground(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
 		super.renderForeground(graphics, mouseX, mouseY, partialTicks);
 		int x = getGuiLeft();
 		int y = getGuiTop();
@@ -137,17 +136,17 @@ public class RedstoneRequesterScreen extends AbstractSimiContainerScreen<Redston
 			ItemStack itemStack = menu.ghostInventory.getStackInSlot(i);
 			if (itemStack.isEmpty())
 				continue;
-			PoseStack ms = graphics.pose();
+			PoseStack ms = graphics;
 			ms.pushPose();
 			ms.translate(0, 0, 100);
-			graphics.renderItemDecorations(font, itemStack, inputX, inputY, "" + amounts.get(i));
+			minecraft.getItemRenderer().renderGuiItemDecorations(font, itemStack, inputX, inputY, "" + amounts.get(i));
 			ms.popPose();
 		}
 
-		if (addressBox.isHovered() && !addressBox.isFocused()) {
+		if (addressBox.isHoveredOrFocused() && !addressBox.isFocused()) {
 			if (addressBox.getValue()
 				.isBlank())
-				graphics.renderComponentTooltip(font,
+				this.renderComponentTooltip(graphics,
 					List.of(Lang.translate("gui.redstone_requester.requester_address")
 						.color(ScrollInput.HEADER_RGB)
 						.component(),
@@ -163,7 +162,7 @@ public class RedstoneRequesterScreen extends AbstractSimiContainerScreen<Redston
 							.component()),
 					mouseX, mouseY);
 			else
-				graphics.renderComponentTooltip(font,
+				this.renderComponentTooltip(graphics,
 					List.of(Lang.translate("gui.redstone_requester.requester_address_given")
 						.color(ScrollInput.HEADER_RGB)
 						.component(),
@@ -199,8 +198,8 @@ public class RedstoneRequesterScreen extends AbstractSimiContainerScreen<Redston
 	}
 
 	@Override
-	protected List<Component> getTooltipFromContainerItem(ItemStack pStack) {
-		List<Component> tooltip = super.getTooltipFromContainerItem(pStack);
+	public List<Component> getTooltipFromItem(ItemStack pStack) {
+		List<Component> tooltip = super.getTooltipFromItem(pStack);
 		if (!(hoveredSlot instanceof SlotItemHandler))
 			return tooltip;
 

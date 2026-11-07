@@ -17,12 +17,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
+import java.util.Random;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelData.Builder;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import java.util.*;
@@ -36,8 +36,8 @@ public class FactoryPanelModel extends BakedModelWrapperWithData {
 	}
 
 	@Override
-	protected Builder gatherModelData(Builder builder, BlockAndTintGetter world, BlockPos pos, BlockState state,
-		ModelData blockEntityData) {
+	protected void gatherModelData(ModelDataMap.Builder builder, BlockAndTintGetter world, BlockPos pos, BlockState state,
+		IModelData blockEntityData) {
 		FactoryPanelModelData data = new FactoryPanelModelData();
 		for (PanelSlot slot : PanelSlot.values()) {
 			FactoryPanelBehaviour behaviour = FactoryPanelBehaviour.at(world, new FactoryPanelPosition(pos, slot));
@@ -47,32 +47,31 @@ public class FactoryPanelModel extends BakedModelWrapperWithData {
 			data.type = behaviour.panelBE().restocker ? PanelType.PACKAGER : PanelType.NETWORK;
 		}
 		data.ponder = world instanceof PonderWorld;
-		return builder.with(PANEL_PROPERTY, data);
+		builder.withInitial(PANEL_PROPERTY, data);
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData data,
-		RenderType renderType) {
-		if (side != null || !data.has(PANEL_PROPERTY))
+	public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData data) {
+		if (side != null || !data.hasProperty(PANEL_PROPERTY))
 			return Collections.emptyList();
-		FactoryPanelModelData modelData = data.get(PANEL_PROPERTY);
-		List<BakedQuad> quads = new ArrayList<>(super.getQuads(state, null, rand, data, renderType));
+		FactoryPanelModelData modelData = data.getData(PANEL_PROPERTY);
+		List<BakedQuad> quads = new ArrayList<>(super.getQuads(state, null, rand, data));
 		for (PanelSlot panelSlot : PanelSlot.values())
 			if (modelData.states.containsKey(panelSlot))
-				addPanel(quads, state, panelSlot, modelData.type, modelData.states.get(panelSlot), rand, data,
-					renderType, modelData.ponder);
+ 				addPanel(quads, state, panelSlot, modelData.type, modelData.states.get(panelSlot), rand, data,
+					modelData.ponder);
 		return quads;
 	}
 
-	public void addPanel(List<BakedQuad> quads, BlockState state, PanelSlot slot, PanelType type, PanelState panelState,
-		RandomSource rand, ModelData data, RenderType renderType, boolean ponder) {
+ 	public void addPanel(List<BakedQuad> quads, BlockState state, PanelSlot slot, PanelType type, PanelState panelState,
+		Random rand, IModelData data, boolean ponder) {
 		PartialModel factoryPanel = panelState == PanelState.PASSIVE
 			? type == PanelType.NETWORK ? ExtraPartialModels.FACTORY_PANEL : ExtraPartialModels.FACTORY_PANEL_RESTOCKER
 			: type == PanelType.NETWORK ? ExtraPartialModels.FACTORY_PANEL_WITH_BULB
 				: ExtraPartialModels.FACTORY_PANEL_RESTOCKER_WITH_BULB;
 
-		List<BakedQuad> quadsToAdd = factoryPanel.get()
-			.getQuads(state, null, rand, data, RenderType.solid());
+ 		List<BakedQuad> quadsToAdd = factoryPanel.get()
+			.getQuads(state, null, rand, data);
 
 		float xRot = Mth.RAD_TO_DEG * FactoryPanelBlock.getXRot(state);
 		float yRot = Mth.RAD_TO_DEG * FactoryPanelBlock.getYRot(state);
@@ -104,7 +103,7 @@ public class FactoryPanelModel extends BakedModelWrapperWithData {
 //				BakedQuadHelper.setNormalXYZ(transformedVertices, i, new Vec3(0, 1, 0));
 			}
 
-			Direction newNormal = Direction.fromDelta((int) Math.round(quadNormal.x), (int) Math.round(quadNormal.y),
+			Direction newNormal = Direction.getNearest((int) Math.round(quadNormal.x), (int) Math.round(quadNormal.y),
 				(int) Math.round(quadNormal.z));
 			quads.add(new BakedQuad(transformedVertices, bakedQuad.getTintIndex(), newNormal, bakedQuad.getSprite(),
 				!ponder && bakedQuad.isShade()));

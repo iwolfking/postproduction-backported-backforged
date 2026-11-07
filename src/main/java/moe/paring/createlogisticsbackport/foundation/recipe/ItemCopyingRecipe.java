@@ -7,7 +7,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -19,7 +18,7 @@ public class ItemCopyingRecipe extends CustomRecipe {
     public static interface SupportsItemCopying {
 
         public default ItemStack createCopy(ItemStack original, int count) {
-            ItemStack copyWithCount = original.copyWithCount(count);
+            ItemStack copyWithCount = moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(original, count);
             copyWithCount.removeTagKey("Enchantments");
             return copyWithCount;
         }
@@ -34,8 +33,8 @@ public class ItemCopyingRecipe extends CustomRecipe {
 
     }
 
-    public ItemCopyingRecipe(ResourceLocation id, CraftingBookCategory category) {
-        super(id, category);
+    public ItemCopyingRecipe(ResourceLocation id) {
+        super(id);
     }
 
     @Override
@@ -44,7 +43,7 @@ public class ItemCopyingRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingContainer container) {
         IntAttached<ItemStack> copyCheck = copyCheck(container);
         if (copyCheck == null)
             return ItemStack.EMPTY;

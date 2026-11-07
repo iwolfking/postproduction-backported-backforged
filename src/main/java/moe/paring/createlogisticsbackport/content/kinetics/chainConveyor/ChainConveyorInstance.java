@@ -143,7 +143,7 @@ public class ChainConveyorInstance extends SingleRotatingInstance<ChainConveyorB
         Vec3 offset =
                 new Vec3(targetPosition.x - this.pos.getX(), targetPosition.y - this.pos.getY(), targetPosition.z - this.pos.getZ());
 
-        BlockPos containingPos = BlockPos.containing(position);
+        BlockPos containingPos = new BlockPos(position);
 
         if (physicsData.modelKey == null) {
             ResourceLocation key = ForgeRegistries.ITEMS.getKey(box.item.getItem());

@@ -45,13 +45,13 @@ public class StockTickerInteractionHandler {
 	@SubscribeEvent
 	public static void interactWithLogisticsManager(EntityInteractSpecific event) {
 		Entity entity = event.getTarget();
-		Player player = event.getEntity();
+		Player player = (Player) event.getEntity();
 		if (player == null || entity == null)
 			return;
 		if (player.isSpectator())
 			return;
 
-		Level level = event.getLevel();
+		Level level = event.getWorld();
 		BlockPos targetPos = getStockTickerPosition(entity);
 		if (targetPos == null)
 			return;
@@ -87,7 +87,7 @@ public class StockTickerInteractionHandler {
 				stbe.behaviour.mayAdministrate(player) && CreateLogisticsBackport.LOGISTICS.isLockable(stbe.behaviour.freqId);
 			boolean isCurrentlyLocked = CreateLogisticsBackport.LOGISTICS.isLocked(stbe.behaviour.freqId);
 
-			NetworkHooks.openScreen(sp, stbe.new RequestMenuProvider(), buf -> {
+			NetworkHooks.openGui(sp, stbe.new RequestMenuProvider(), buf -> {
 				buf.writeBoolean(showLockOption);
 				buf.writeBoolean(isCurrentlyLocked);
 				buf.writeBlockPos(targetPos);
@@ -176,8 +176,8 @@ public class StockTickerInteractionHandler {
 
 				int newStackSize = item.getCount() - toRemove;
 				player.getInventory()
-					.setItem(i, newStackSize == 0 ? ItemStack.EMPTY : item.copyWithCount(newStackSize));
-				toTransfer.add(item.copyWithCount(toRemove));
+					.setItem(i, newStackSize == 0 ? ItemStack.EMPTY : moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(item, newStackSize));
+				toTransfer.add(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(item, toRemove));
 			}
 
 			if (simulate && tally.getTotalCount() != 0) {
@@ -217,7 +217,7 @@ public class StockTickerInteractionHandler {
 			for (int y : Iterate.zeroAndOne) {
 				BlockPos workstationPos = pos.relative(d)
 					.above(y);
-				if (!(entity.level()
+				if (!(entity.level
 					.getBlockState(workstationPos)
 					.getBlock() instanceof StockTickerBlock))
 					continue;

@@ -24,7 +24,7 @@
 			"name": "bell",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [0]
+			"parts": [0]
 		}
 	]
 }

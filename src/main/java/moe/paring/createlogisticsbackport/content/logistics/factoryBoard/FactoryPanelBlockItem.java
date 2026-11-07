@@ -46,7 +46,7 @@ public class FactoryPanelBlockItem extends LogisticallyLinkedBlockItem {
 	public static ItemStack fixCtrlCopiedStack(ItemStack stack) {
 		// Salvage frequency data from one of the panel slots
 		if (isTuned(stack) && networkFromStack(stack) == null) {
-			CompoundTag bet = stack.getTagElement(BLOCK_ENTITY_TAG);
+			CompoundTag bet = stack.getTagElement("BlockEntityTag");
 			UUID frequency = UUID.randomUUID();
 			
 			for (PanelSlot slot : PanelSlot.values()) {
@@ -57,7 +57,7 @@ public class FactoryPanelBlockItem extends LogisticallyLinkedBlockItem {
 			
 			bet = new CompoundTag();
 			bet.putUUID("Freq", frequency);
-			stack.getTag().put(BLOCK_ENTITY_TAG, bet);
+			stack.getTag().put("BlockEntityTag", bet);
 		}
 		
 		return stack;

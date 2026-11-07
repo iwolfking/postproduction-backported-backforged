@@ -14,8 +14,7 @@ public class ItemHatchHandler {
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void useOnItemHatchIgnoresSneak(RightClickBlock event) {
-		if (event.getUseItem() == Result.DEFAULT && ExtraBlocks.ITEM_HATCH.has(event.getLevel()
-			.getBlockState(event.getPos())))
+		if (event.getUseItem() == Result.DEFAULT && ExtraBlocks.ITEM_HATCH.has(event.getWorld().getBlockState(event.getPos())))
 			event.setUseBlock(Result.ALLOW);
 	}
 

@@ -2,7 +2,7 @@ package moe.paring.createlogisticsbackport.content.logistics.tableCloth;
 
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.logistics.depot.DepotRenderer;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
@@ -54,9 +54,9 @@ public class TableClothRenderer extends SmartBlockEntityRenderer<TableClothBlock
 			ms.translate(0.5f, 3 / 16f, 0.5f);
 
 			if (stacks.size() > 1) {
-				ms.mulPose(Axis.YP.rotationDegrees(i * (360f / stacks.size()) + 45f));
+				ms.mulPose(Vector3f.YP.rotationDegrees(i * (360f / stacks.size()) + 45f));
 				ms.translate(0, i % 2 == 0 ? -0.005 : 0, 5 / 16f);
-				ms.mulPose(Axis.YP.rotationDegrees(-i * (360f / stacks.size()) - 45f));
+				ms.mulPose(Vector3f.YP.rotationDegrees(-i * (360f / stacks.size()) - 45f));
 			}
 
 			BakedModel bakedModel = Minecraft.getInstance()
@@ -67,7 +67,7 @@ public class TableClothRenderer extends SmartBlockEntityRenderer<TableClothBlock
 				TransformStack.cast(ms)
 					.rotate(Direction.UP, -rotationInRadians + Mth.PI);
 
-			DepotRendererExtra.renderItem(blockEntity.getLevel(), ms, buffer, light, OverlayTexture.NO_OVERLAY, entry, 0,
+			DepotRendererExtra.renderItem(ms, buffer, light, OverlayTexture.NO_OVERLAY, entry, 0,
 				null, Vec3.atCenterOf(blockEntity.getBlockPos()), true);
 			ms.popPose();
 		}

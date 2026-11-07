@@ -4,9 +4,10 @@ import com.jozufozu.flywheel.core.PartialModel;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.GuiComponent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllPackets;
 import com.simibubi.create.AllPartialModels;
@@ -44,9 +45,9 @@ import moe.paring.createlogisticsbackport.polyfill.BlazeBurnerRendererExtra;
 import moe.paring.createlogisticsbackport.polyfill.ICanPlayUiSound;
 import moe.paring.createlogisticsbackport.polyfill.behaviour.BlazeBurnerStockKeeperBehaviour;
 import moe.paring.createlogisticsbackport.registry.*;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.LightTexture;
@@ -92,8 +93,6 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             this.y = y;
         }
     }
-
-    ;
 
     private static final ExtraGuiTextures NUMBERS = ExtraGuiTextures.NUMBERS;
     private static final ExtraGuiTextures HEADER = ExtraGuiTextures.STOCK_KEEPER_REQUEST_HEADER;
@@ -290,7 +289,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             ItemStack stack = blockEntity.categories.get(i);
             CategoryEntry entry = new CategoryEntry(i, stack.isEmpty() ? ""
                     : stack.getHoverName()
-                    .getString(),
+                      .getString(),
                     0);
             entry.hidden = hiddenCategories.contains(i);
             categories.add(entry);
@@ -455,8 +454,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics) {
-        PoseStack ms = graphics.pose();
+    public void renderBackground(PoseStack graphics) {
+        PoseStack ms = graphics;
         ms.pushPose();
         ms.translate(0, 0, -300);
         super.renderBackground(graphics);
@@ -464,11 +463,11 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         if (this != minecraft.screen)
-            return; // stencil buffer does not cooperate with ponders gui fade out
+            return;
 
-        PoseStack ms = graphics.pose();
+        PoseStack ms = graphics;
         float currentScroll = itemScroll.getValue(partialTicks);
         Couple<Integer> hoveredSlot = getHoveredSlot(mouseX, mouseY);
 
@@ -488,9 +487,9 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         // Render text input hints
         if (addressBox.getValue()
                 .isBlank() && !addressBox.isFocused()) {
-            graphics.drawString(Minecraft.getInstance().font, Lang.translate("gui.stock_keeper.package_adress")
+            moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,Minecraft.getInstance().font, Lang.translate("gui.stock_keeper.package_adress")
                     .style(ChatFormatting.ITALIC)
-                    .component(), addressBox.getX(), addressBox.getY(), 0xff_CDBCA8, false);
+                    .component(), addressBox.x, addressBox.y, 0xff_CDBCA8, false);
         }
 
         // Render keeper
@@ -503,7 +502,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
                     .getXsize() - 1) * 50);
             int entityX = x - 35 - entitySizeOffset;
             int entityY = y + windowHeight - 17;
-            InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, entityX, entityY, 50, entityX - mouseX,
+            InventoryScreen.renderEntityInInventory(entityX, entityY, 50, entityX - mouseX,
                     Mth.clamp(entityY - mouseY, -50, 10), keeper);
             ms.popPose();
         }
@@ -514,8 +513,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             int entityX = x - 35;
             int entityY = y + windowHeight - 23;
             ms.translate(entityX, entityY, -100);
-            ms.mulPose(Axis.XP.rotationDegrees(-22.5f));
-            ms.mulPose(Axis.YP.rotationDegrees(-45));
+            ms.mulPose(Vector3f.XP.rotationDegrees(-22.5f));
+            ms.mulPose(Vector3f.YP.rotationDegrees(-45));
             ms.scale(48, -48, 48);
             float animation = ((BlazeBurnerBlockEntityAccessor)keeperBE).getHeadAnimation().getValue(AnimationTickHolder.getPartialTicks()) * .175f;
             float horizontalAngle = AngleHelper.rad(270);
@@ -526,13 +525,13 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             int hashCode = keeperBE.hashCode();
             Lighting.setupForEntityInInventory();
 
-            VertexConsumer cutout = graphics.bufferSource().getBuffer(RenderType.cutoutMipped());
+            VertexConsumer cutout = minecraft.renderBuffers().bufferSource().getBuffer(RenderType.cutoutMipped());
             CachedBufferer.partial(ExtraPartialModels.BLAZE_CAGE, keeperBE.getBlockState())
                     .rotateCentered(Direction.UP, horizontalAngle + Mth.PI)
                     .light(LightTexture.FULL_BRIGHT)
                     .renderInto(ms, cutout);
 
-            BlazeBurnerRendererExtra.renderShared(ms, null, graphics.bufferSource(), minecraft.level,
+            BlazeBurnerRendererExtra.renderShared(ms, null, minecraft.renderBuffers().bufferSource(), minecraft.level,
                     keeperBE.getBlockState(), heatLevel, animation, horizontalAngle, canDrawFlame, drawGoggles, drawHat,
                     hashCode);
             Lighting.setupFor3DItems();
@@ -564,8 +563,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         }
 
         if (itemsToOrder.size() > 9) {
-            graphics.drawString(font, Component.literal("[+" + (itemsToOrder.size() - 9) + "]"), x + windowWidth - 40,
-                    orderY + 21, 0xF8F8EC);
+            moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, new TextComponent("[+" + (itemsToOrder.size() - 9) + "]"), x + windowWidth - 40,
+                    orderY + 21, 0xF8F8EC, false);
         }
 
         boolean justSent = itemsToOrder.isEmpty() && successTicks > 0;
@@ -575,7 +574,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 
         MutableComponent headerTitle = Lang.translate("gui.stock_keeper.title")
                 .component();
-        graphics.drawString(font, headerTitle, x + windowWidth / 2 - font.width(headerTitle) / 2, y + 4, 0x714A40,
+        moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, headerTitle, x + windowWidth / 2 - font.width(headerTitle) / 2, y + 4, 0x714A40,
                 false);
         MutableComponent component =
                 Lang.translate(encodeRequester ? "gui.stock_keeper.configure" : "gui.stock_keeper.send")
@@ -586,14 +585,14 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             ms.pushPose();
             ms.translate(alpha * alpha * 50, 0, 0);
             if (successTicks < 10)
-                graphics.drawString(font, component, x + windowWidth - 42 - font.width(component) / 2,
+                moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, component, x + windowWidth - 42 - font.width(component) / 2,
                         y + windowHeight - 35, new Color(0x252525).setAlpha(1 - alpha * alpha)
                                 .getRGB(),
                         false);
             ms.popPose();
 
         } else {
-            graphics.drawString(font, component, x + windowWidth - 42 - font.width(component) / 2,
+            moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, component, x + windowWidth - 42 - font.width(component) / 2,
                     y + windowHeight - 35, 0x252525, false);
         }
 
@@ -611,7 +610,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
                 UIRenderHelperExtra.drawStretched(graphics, msgX, msgY - 4, w, 16, 0,
                         ExtraGuiTextures.STOCK_KEEPER_REQUEST_BANNER_M);
                 ExtraGuiTextures.STOCK_KEEPER_REQUEST_BANNER_R.render(graphics, msgX + font.width(msg) + 10, msgY - 4);
-                graphics.drawString(font, msg, msgX + 5, msgY, c3, false);
+                moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, msg, msgX + 5, msgY, c3, false);
             }
         }
 
@@ -620,9 +619,17 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         int itemWindowY = y + 17;
         int itemWindowY2 = y + windowHeight - 80;
 
-        UIRenderHelper.swapAndBlitColor(minecraft.getMainRenderTarget(), UIRenderHelper.framebuffer);
-        startStencil(graphics, itemWindowX - 5, itemWindowY, itemWindowX2 - itemWindowX + 10,
-                itemWindowY2 - itemWindowY);
+        // --- NATIVE SCISSOR CLIP (Reliable replacement for stencils) ---
+        Window window = minecraft.getWindow();
+        double scale = window.getGuiScale();
+        int screenHeight = window.getScreenHeight();
+
+        int scissorX = (int) ((itemWindowX - 5) * scale);
+        int scissorY = (int) (screenHeight - (itemWindowY2) * scale);
+        int scissorW = (int) ((itemWindowX2 - itemWindowX + 10) * scale);
+        int scissorH = (int) ((itemWindowY2 - itemWindowY) * scale);
+
+        RenderSystem.enableScissor(scissorX, scissorY, scissorW, scissorH);
 
         ms.pushPose();
         ms.translate(0, -currentScroll * rowHeight, 0);
@@ -638,12 +645,12 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         }
 
         // Search bar
-        ExtraGuiTextures.STOCK_KEEPER_REQUEST_SEARCH.render(graphics, x + 42, searchBox.getY() - 5);
+        ExtraGuiTextures.STOCK_KEEPER_REQUEST_SEARCH.render(graphics, x + 42, searchBox.y - 5);
         searchBox.render(graphics, mouseX, mouseY, partialTicks);
         if (searchBox.getValue()
                 .isBlank() && !searchBox.isFocused())
-            graphics.drawString(font, searchBox.getMessage(),
-                    x + windowWidth / 2 - font.width(searchBox.getMessage()) / 2, searchBox.getY(), 0xff4A2D31, false);
+            moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, searchBox.getMessage(),
+                    x + windowWidth / 2 - font.width(searchBox.getMessage()) / 2, searchBox.y, 0xff4A2D31, false);
 
         // Something isnt right
         boolean allEmpty = true;
@@ -657,11 +664,11 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
                 for (int i = 0; i < split.size(); i++) {
                     FormattedCharSequence sequence = split.get(i);
                     int lineWidth = font.width(sequence);
-                    graphics.drawString(font, sequence, x + windowWidth / 2 - lineWidth / 2 + 1,
+                    moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, sequence, x + windowWidth / 2 - lineWidth / 2 + 1,
                             itemsY + 20 + 1 + i * (font.lineHeight + 1), new Color(0x4A2D31).setAlpha(alpha)
                                     .getRGB(),
                             false);
-                    graphics.drawString(font, sequence, x + windowWidth / 2 - lineWidth / 2,
+                    moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, sequence, x + windowWidth / 2 - lineWidth / 2,
                             itemsY + 20 + i * (font.lineHeight + 1), new Color(0xF8F8EC).setAlpha(alpha)
                                     .getRGB(),
                             false);
@@ -680,8 +687,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             if (!categories.isEmpty()) {
                 (categoryEntry.hidden ? ExtraGuiTextures.STOCK_KEEPER_CATEGORY_HIDDEN
                         : ExtraGuiTextures.STOCK_KEEPER_CATEGORY_SHOWN).render(graphics, itemsX, itemsY + categoryY + 6);
-                graphics.drawString(font, categoryEntry.name, itemsX + 10, itemsY + categoryY + 8, 0x4A2D31, false);
-                graphics.drawString(font, categoryEntry.name, itemsX + 9, itemsY + categoryY + 7, 0xF8F8EC, false);
+                moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, categoryEntry.name, itemsX + 10, itemsY + categoryY + 8, 0x4A2D31, false);
+                moe.paring.createlogisticsbackport.DrawHelper.drawString(graphics,font, categoryEntry.name, itemsX + 9, itemsY + categoryY + 7, 0xF8F8EC, false);
                 if (categoryEntry.hidden)
                     continue;
             }
@@ -711,7 +718,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
                     .render(graphics, lockX, lockY);
 
         ms.popPose();
-        endStencil();
+        RenderSystem.disableScissor();
+        // -------------------------------------------------------------
 
         // Scroll bar
         int windowH = windowHeight - 92;
@@ -723,8 +731,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             ms.pushPose();
             ms.translate(0, (currentScroll * rowHeight) / totalH * (windowH - 2), 0);
             ExtraGuiTextures pad = ExtraGuiTextures.STOCK_KEEPER_REQUEST_SCROLL_PAD;
-            graphics.blit(pad.location, barX, barY, pad.getWidth(), barSize, pad.getStartX(), pad.getStartY(),
-                    pad.getWidth(), pad.getHeight(), 256, 256);
+            RenderSystem.setShaderTexture(0, pad.location);
+            GuiComponent.blit(graphics, barX, barY, (float) pad.getStartX(), (float) pad.getStartY(), pad.getWidth(), barSize, 256, 256);
             ExtraGuiTextures.STOCK_KEEPER_REQUEST_SCROLL_TOP.render(graphics, barX, barY);
             if (barSize > 16)
                 ExtraGuiTextures.STOCK_KEEPER_REQUEST_SCROLL_MID.render(graphics, barX, barY + barSize / 2 - 4);
@@ -758,12 +766,10 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 
             ms.popPose();
         }
-
-        UIRenderHelper.swapAndBlitColor(UIRenderHelper.framebuffer, minecraft.getMainRenderTarget());
     }
 
     @Override
-    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    protected void renderForeground(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         super.renderForeground(graphics, mouseX, mouseY, partialTicks);
         float currentScroll = itemScroll.getValue(partialTicks);
         Couple<Integer> hoveredSlot = getHoveredSlot(mouseX, mouseY);
@@ -775,24 +781,24 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             boolean orderHovered = hoveredSlot.getFirst() == -1;
             BigItemStack entry = recipeHovered ? recipesToOrder.get(slot)
                     : orderHovered ? itemsToOrder.get(slot)
-                    : displayedItems.get(hoveredSlot.getFirst())
-                    .get(slot);
+                      : displayedItems.get(hoveredSlot.getFirst())
+                        .get(slot);
 
             if (recipeHovered) {
                 ArrayList<Component> lines =
-                        new ArrayList<>(entry.stack.getTooltipLines(minecraft.player, TooltipFlag.NORMAL));
+                        new ArrayList<>(entry.stack.getTooltipLines(minecraft.player, TooltipFlag.Default.NORMAL));
                 if (lines.size() > 0)
                     lines.set(0, Lang.translateDirect("gui.stock_keeper.craft", lines.get(0)
                             .copy()));
-                graphics.renderComponentTooltip(font, lines, mouseX, mouseY);
+                this.renderComponentTooltip(graphics, lines, mouseX, mouseY);
             } else
-                graphics.renderTooltip(font, entry.stack, mouseX, mouseY);
+                this.renderTooltip(graphics, entry.stack, mouseX, mouseY);
         }
 
         // Render tooltip of lock option
         if (currentScroll < 1 && isAdmin && mouseX > lockX && mouseX <= lockX + 15 && mouseY > lockY
                 && mouseY <= lockY + 15) {
-            graphics.renderComponentTooltip(font,
+            this.renderComponentTooltip(graphics,
                     List.of(
                             Lang.translate(isLocked ? "gui.stock_keeper.network_locked" : "gui.stock_keeper.network_open")
                                     .component(),
@@ -811,8 +817,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 
         // Render tooltip of address input
         if (addressBox.getValue()
-                .isBlank() && !addressBox.isFocused() && addressBox.isHovered()) {
-            graphics.renderComponentTooltip(font, List.of(Lang.translate("gui.factory_panel.restocker_address")
+                .isBlank() && !addressBox.isFocused() && addressBox.isHoveredOrFocused()) {
+            this.renderComponentTooltip(graphics, List.of(Lang.translate("gui.factory_panel.restocker_address")
                                     .color(ScrollInput.HEADER_RGB)
                                     .component(),
                             Lang.translate("gui.schedule.lmb_edit")
@@ -823,7 +829,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         }
     }
 
-    private void renderItemEntry(GuiGraphics graphics, float scale, BigItemStack entry, boolean isStackHovered,
+    private void renderItemEntry(PoseStack graphics, float scale, BigItemStack entry, boolean isStackHovered,
                                  boolean isRenderingOrders) {
 
         int customCount = entry.count;
@@ -841,7 +847,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         }
 
         boolean craftable = entry instanceof CraftableBigItemStack;
-        PoseStack ms = graphics.pose();
+        PoseStack ms = graphics;
         ms.pushPose();
 
         float scaleFromHover = 1;
@@ -861,18 +867,18 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         ms.pushPose();
         ms.translate(0, 0, 190);
         if (customCount != 0 || craftable)
-            graphics.renderItemDecorations(font, entry.stack, 1, 1, "");
+            minecraft.getItemRenderer().renderGuiItemDecorations(font, entry.stack, 1, 1, "");
         ms.translate(0, 0, 10);
         if (customCount > 1 || craftable)
             drawItemCount(graphics, entry.count, customCount);
         ms.popPose();
     }
 
-    private void drawItemCount(GuiGraphics graphics, int count, int customCount) {
+    private void drawItemCount(PoseStack graphics, int count, int customCount) {
         count = customCount;
         String text = count >= 1000000 ? (count / 1000000) + "m"
                 : count >= 10000 ? (count / 1000) + "k"
-                : count >= 1000 ? ((count * 10) / 1000) / 10f + "k" : count >= 100 ? count + "" : " " + count;
+                  : count >= 1000 ? ((count * 10) / 1000) / 10f + "k" : count >= 100 ? count + "" : " " + count;
 
         if (count >= BigItemStack.INF)
             text = "+";
@@ -908,8 +914,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             }
 
             RenderSystem.enableBlend();
-            graphics.blit(NUMBERS.location, 14 + x, 10, 0, NUMBERS.getStartX() + xOffset, NUMBERS.getStartY(),
-                    spriteWidth, NUMBERS.getHeight(), 256, 256);
+            RenderSystem.setShaderTexture(0, NUMBERS.location);
+            GuiComponent.blit(graphics, 14 + x, 10, (float) (NUMBERS.getStartX() + xOffset), (float) NUMBERS.getStartY(), spriteWidth, NUMBERS.getHeight(), 256, 256);
             x += spriteWidth - 1;
         }
 
@@ -955,7 +961,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         // Ordered recipe is hovered
         if (y >= orderY - 31 && y < orderY - 31 + rowHeight) {
             int jeiX = getGuiLeft() + (windowWidth - colWidth * recipesToOrder.size()) / 2 + 1;
-            int col = Mth.floorDiv(x - jeiX, colWidth);
+            int col = Math.floorDiv(x - jeiX, colWidth);
             if (recipesToOrder.size() > col && col >= 0)
                 return Couple.create(-2, col);
         }
@@ -1032,21 +1038,21 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             searchBox.setValue("");
             refreshSearchNextTick = true;
             moveToTopNextTick = true;
-            searchBox.setFocused(true);
+            moe.paring.createlogisticsbackport.DrawHelper.setFocused(searchBox, true);
             syncJEI();
             return true;
         }
 
         if (addressBox.isFocused()) {
             boolean result = addressBox.mouseClicked(pMouseX, pMouseY, pButton);
-            if (addressBox.isHovered() || result)
+            if (addressBox.isHoveredOrFocused() || result)
                 return result;
-            addressBox.setFocused(false);
+            moe.paring.createlogisticsbackport.DrawHelper.setFocused(addressBox, false);
         }
         if (searchBox.isFocused()) {
-            if (searchBox.isHovered())
+            if (searchBox.isHoveredOrFocused())
                 return searchBox.mouseClicked(pMouseX, pMouseY, pButton);
-            searchBox.setFocused(false);
+            moe.paring.createlogisticsbackport.DrawHelper.setFocused(searchBox, false);
         }
 
         // Scroll bar
@@ -1068,14 +1074,14 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             isLocked = !isLocked;
             ExtraPackets.getChannel()
                     .sendToServer(new StockKeeperLockPacket(blockEntity.getBlockPos(), isLocked));
-            playUiSound(SoundEvents.UI_BUTTON_CLICK.value(), 1, 1);
+            playUiSound(SoundEvents.UI_BUTTON_CLICK, 1, 1);
             return true;
         }
 
         // Confirm
         if (lmb && isConfirmHovered((int) pMouseX, (int) pMouseY)) {
             sendIt();
-            playUiSound(SoundEvents.UI_BUTTON_CLICK.value(), 1, 1);
+            playUiSound(SoundEvents.UI_BUTTON_CLICK, 1, 1);
             return true;
         }
 
@@ -1117,8 +1123,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         boolean recipeClicked = hoveredSlot.getFirst() == -2;
         BigItemStack entry = recipeClicked ? recipesToOrder.get(hoveredSlot.getSecond())
                 : orderClicked ? itemsToOrder.get(hoveredSlot.getSecond())
-                : displayedItems.get(hoveredSlot.getFirst())
-                .get(hoveredSlot.getSecond());
+                  : displayedItems.get(hoveredSlot.getFirst())
+                    .get(hoveredSlot.getSecond());
 
         ItemStack itemStack = entry.stack;
         int transfer = hasShiftDown() ? itemStack.getMaxStackSize() : hasControlDown() ? 10 : 1;
@@ -1136,9 +1142,9 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         if (existingOrder == null) {
             if (itemsToOrder.size() >= cols || rmb)
                 return true;
-            itemsToOrder.add(existingOrder = new BigItemStack(itemStack.copyWithCount(1), 0));
+            itemsToOrder.add(existingOrder = new BigItemStack(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(itemStack, 1), 0));
             playUiSound(SoundEvents.WOOL_STEP, 0.75f, 1.2f);
-            playUiSound(SoundEvents.BAMBOO_WOOD_STEP, 0.75f, 0.8f);
+            playUiSound(SoundEvents.WOOD_STEP, 0.75f, 0.8f);
         }
 
         int current = existingOrder.count;
@@ -1148,7 +1154,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             if (existingOrder.count <= 0) {
                 itemsToOrder.remove(existingOrder);
                 playUiSound(SoundEvents.WOOL_STEP, 0.75f, 1.8f);
-                playUiSound(SoundEvents.BAMBOO_WOOD_STEP, 0.75f, 1.8f);
+                playUiSound(SoundEvents.WOOD_STEP, 0.75f, 1.8f);
             }
             return true;
         }
@@ -1188,8 +1194,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         boolean recipeClicked = hoveredSlot.getFirst() == -2;
         BigItemStack entry = recipeClicked ? recipesToOrder.get(hoveredSlot.getSecond())
                 : orderClicked ? itemsToOrder.get(hoveredSlot.getSecond())
-                : displayedItems.get(hoveredSlot.getFirst())
-                .get(hoveredSlot.getSecond());
+                  : displayedItems.get(hoveredSlot.getFirst())
+                    .get(hoveredSlot.getSecond());
 
         boolean remove = delta < 0;
         int transfer = Mth.ceil(Math.abs(delta)) * (hasControlDown() ? 10 : 1);
@@ -1203,9 +1209,9 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         if (existingOrder == null) {
             if (itemsToOrder.size() >= cols || remove)
                 return true;
-            itemsToOrder.add(existingOrder = new BigItemStack(entry.stack.copyWithCount(1), 0));
+            itemsToOrder.add(existingOrder = new BigItemStack(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(entry.stack, 1), 0));
             playUiSound(SoundEvents.WOOL_STEP, 0.75f, 1.2f);
-            playUiSound(SoundEvents.BAMBOO_WOOD_STEP, 0.75f, 0.8f);
+            playUiSound(SoundEvents.WOOD_STEP, 0.75f, 0.8f);
         }
 
         int current = existingOrder.count;
@@ -1215,7 +1221,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             if (existingOrder.count <= 0) {
                 itemsToOrder.remove(existingOrder);
                 playUiSound(SoundEvents.WOOL_STEP, 0.75f, 1.8f);
-                playUiSound(SoundEvents.BAMBOO_WOOD_STEP, 0.75f, 1.8f);
+                playUiSound(SoundEvents.WOOD_STEP, 0.75f, 1.8f);
             } else if (existingOrder.count != current)
                 playUiSound(AllSoundEvents.SCROLL_VALUE.getMainEvent(), 0.25f, 1.2f);
             return true;
@@ -1304,7 +1310,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         if (pKeyCode == GLFW.GLFW_KEY_ENTER && searchBox.isFocused()) {
-            searchBox.setFocused(false);
+            moe.paring.createlogisticsbackport.DrawHelper.setFocused(searchBox, false);
             return true;
         }
 
@@ -1346,7 +1352,6 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         forcedEntries = new InventorySummary();
         InventorySummary summary = blockEntity.getLastClientsideStockSnapshotAsSummary();
         for (BigItemStack toOrder : itemsToOrder) {
-            // momentarily cut the displayed stack size until the stock updates come in
             int countOf = summary.getCountOf(toOrder.stack);
             if (countOf == BigItemStack.INF)
                 continue;
@@ -1365,7 +1370,6 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
                 List<BigItemStack> mutableOrder = BigItemStack.duplicateWrappers(itemsToOrder);
 
                 while (craftedCount < targetCount) {
-                    // Carefully split the ordered recipes based on what exactly will be used to craft them
                     PackageOrder pattern = new PackageOrder(FactoryPanelScreen.convertRecipeToPackageOrderContext(cr, mutableOrder, true));
                     int maxCrafts = targetCount - craftedCount;
                     int availableCrafts = 0;
@@ -1495,7 +1499,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
                     }
                 } else {
                     if (order == null)
-                        itemsToOrder.add(order = new BigItemStack(entry.stack.copyWithCount(1), 0));
+                        itemsToOrder.add(order = new BigItemStack(moe.paring.createlogisticsbackport.foundation.util.ItemStackHelper.copyWithCount(entry.stack, 1), 0));
                     order.count += toTransfer;
                 }
 
@@ -1520,10 +1524,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             List<List<BigItemStack>> validEntriesByIngredient = craftingResult.getSecond();
             int outputCount = cbis.getOutputCount(blockEntity.getLevel());
 
-            // Only tweak amounts downward
             cbis.count = Math.min(cbis.count, maxCraftable);
 
-            // Use ingredients up before checking next recipe
             for (List<BigItemStack> list : validEntriesByIngredient) {
                 int remaining = cbis.count / outputCount;
                 for (BigItemStack entry : list) {
@@ -1579,7 +1581,6 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
             validEntriesByIngredient.add(valid);
         }
 
-        // Used new items may have to be trimmed
         if (newTypeLimit != -1) {
             int toRemove = (int) validEntriesByIngredient.stream()
                     .flatMap(l -> l.stream())
@@ -1591,10 +1592,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
                 removeLeastEssentialItemStack(validEntriesByIngredient);
         }
 
-        // Ingredients with shared items must divide counts
         validEntriesByIngredient = resolveIngredientAmounts(validEntriesByIngredient);
 
-        // Determine the bottlenecking ingredient
         int minCount = Integer.MAX_VALUE;
         for (List<BigItemStack> list : validEntriesByIngredient) {
             int sum = 0;
@@ -1678,5 +1677,4 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
         if (ExtraMods.JEI.isLoaded() && ExtraConfigs.client().syncJeiSearch.get())
             CreateBackportJEI.runtime.getIngredientFilter().setFilterText(searchBox.getValue());
     }
-
 }

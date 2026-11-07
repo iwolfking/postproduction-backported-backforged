@@ -30,8 +30,8 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 
 import java.util.List;
 import java.util.Map.Entry;
@@ -80,7 +80,7 @@ public class ChainConveyorRenderer extends KineticBlockEntityRenderer<ChainConve
         Vec3 offset =
                 new Vec3(targetPosition.x - pos.getX(), targetPosition.y - pos.getY(), targetPosition.z - pos.getZ());
 
-        BlockPos containingPos = BlockPos.containing(position);
+        BlockPos containingPos = new BlockPos(position);
         Level level = be.getLevel();
         BlockState blockState = be.getBlockState();
         int light = LightTexture.pack(level.getBrightness(LightLayer.BLOCK, containingPos),
