@@ -607,8 +607,10 @@ public class FactoryPanelBehaviour extends FilteringBehaviour2 implements MenuPr
         }
 
         // Open configuration screen
-        if (isClientSide)
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> displayScreen(player));
+        if (!isClientSide && player instanceof ServerPlayer sp) {
+            NetworkHooks.openGui(sp, this, buf -> getPanelPosition().send(buf));
+            return;
+        }
     }
 
     public void enable() {
